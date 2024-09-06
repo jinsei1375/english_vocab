@@ -5,10 +5,41 @@ datasource db {
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "darwin-arm64", "linux-arm64-openssl-1.1.x"]
 }
 
-model User {
-  id    Int     @id @default(autoincrement())
-  name  String
-  email String  @unique
+model users {
+  id          Int          @id @default(autoincrement())
+  google_id   String       @unique
+  email       String       @unique
+  name        String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt
+  deleted_at  DateTime?
+  vocabularies vocabularies[]
+  // tests       tests[]
 }
+
+model vocabularies {
+  id          Int      @id @default(autoincrement())
+  user_id     Int
+  word        String
+  meaning     String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  deleted_at  DateTime?
+  user        users    @relation(fields: [user_id], references: [id])
+  // tests       tests[]
+}
+
+// model tests {
+//   id          Int      @id @default(autoincrement())
+//   user_id     Int
+//   vocab_id    Int
+//   score       Int
+//   created_at  DateTime @default(now())
+//   updated_at  DateTime @updatedAt
+//   deleted_at  DateTime?
+//   user        users    @relation(fields: [user_id], references: [id])
+//   vocabulary  vocabularies @relation(fields: [vocab_id], references: [id])
+// }

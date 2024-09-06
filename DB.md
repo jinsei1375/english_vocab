@@ -16,14 +16,14 @@ erDiagram
         created_at datetime
         updated_at datetime
     }
-    tests {
+    <!-- tests {
         id int PK
         user_id int FK
         vocab_id int FK
         score int
         created_at datetime
         updated_at datetime
-    }
+    } -->
 
     users ||--o{ vocabularies: "has many"
     users ||--o{ tests: "has many"
