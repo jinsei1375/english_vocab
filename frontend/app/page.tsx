@@ -1,17 +1,22 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 export default function Home() {
-  const router = useRouter();
-
-  const handleGoogleLogin = () => {
-    router.push('/api/auth/google');
-  };
+  const { data: session } = useSession();
 
   return (
-    <main>
-      <button onClick={handleGoogleLogin}>Googleでログイン</button>
-    </main>
+    <div>
+      {!session ? (
+        <>
+          <button onClick={() => signIn('google')}>Googleでログイン</button>
+        </>
+      ) : (
+        <>
+          <p>こんにちは、{session.user?.name}さん</p>
+          <button onClick={() => signOut()}>ログアウト</button>
+        </>
+      )}
+    </div>
   );
 }
