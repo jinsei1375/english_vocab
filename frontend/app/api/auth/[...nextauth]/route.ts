@@ -1,6 +1,7 @@
 import NextAuth, { AuthOptions } from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
+const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 declare module 'next-auth' {
   interface Session {
     user: {
@@ -28,7 +29,7 @@ export const authOptions: AuthOptions = {
 
       try {
         // バックエンドのAPIエンドポイントにユーザー情報を送信
-        const response = await fetch('http://localhost:3001/api/users', {
+        const response = await fetch(`${apiUrl}/api/users`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

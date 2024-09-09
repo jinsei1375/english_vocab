@@ -8,28 +8,26 @@ generator client {
   binaryTargets = ["native", "darwin-arm64", "linux-arm64-openssl-1.1.x", "debian-openssl-1.1.x"]
 }
 
-model users {
+model User {
   id          Int          @id @default(autoincrement())
-  google_id   String       @unique
+  googleId    String       @unique
   email       String       @unique
   name        String
-  created_at  DateTime     @default(now())
-  updated_at  DateTime     @updatedAt
-  deleted_at  DateTime?
-  vocabularies vocabularies[]
-  // tests       tests[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+  vocabularies Vocabulary[]
 }
 
-model vocabularies {
+model Vocabulary {
   id          Int      @id @default(autoincrement())
   user_id     Int
   word        String
   meaning     String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
-  deleted_at  DateTime?
-  user        users    @relation(fields: [user_id], references: [id])
-  // tests       tests[]
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
+  user        User    @relation(fields: [user_id], references: [id])
 }
 
 // model tests {

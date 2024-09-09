@@ -3,6 +3,7 @@ import { prisma } from '../lib/prisma';
 import cors from 'cors';
 
 const app = express();
+console.log('Prisma Client initialized');
 app.use(express.json());
 app.use(
   cors({
@@ -17,13 +18,30 @@ app.post('/api/users', async (req, res) => {
   const { google_id, name, email } = req.body;
 
   try {
-    const user = await prisma.users.upsert({
-      where: { email },
-      update: { google_id, name },
-      create: { google_id, name, email },
+    console.log('Connecting to database...');
+    // console.log(prisma.user);
+    let user = await prisma.user.findUnique({
+      where: { googleId: google_id },
     });
+
+    console.log('User found:', user);
+
+    if (!user) {
+      // ユーザーが存在しない場合、新しいユーザーを作成
+      console.log('Creating new user...');
+      user = await prisma.user.create({
+        data: {
+          googleId: google_id,
+          name,
+          email,
+        },
+      });
+      console.log('New user created:', user);
+    }
+
     res.status(200).json(user);
   } catch (error) {
+    console.error('Error during user creation:', error);
     res.status(500).json({ error: 'ユーザーの作成に失敗しました。' });
   }
 });
