@@ -1,86 +1,34 @@
 import express from 'express';
-import session from 'express-session';
-import passport from 'passport';
-import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
-import { PrismaClient, users as PrismaUser } from '@prisma/client';
-import dotenv from 'dotenv';
-
-dotenv.config();
+import { prisma } from '../lib/prisma';
+import cors from 'cors';
 
 const app = express();
-const port = 3001;
-const prisma = new PrismaClient();
-
-app.use(session({ secret: 'your-secret-key', resave: false, saveUninitialized: true }));
-app.use(passport.initialize());
-app.use(passport.session());
-
-type User = PrismaUser;
-
-passport.use(
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-      callbackURL: 'http://localhost:3000/auth/callback',
-    },
-    async (
-      accessToken: string,
-      refreshToken: string,
-      profile: Profile,
-      done: (error: any, user?: any) => void
-    ) => {
-      const email = profile.emails && profile.emails[0] ? profile.emails[0].value : null;
-      if (!email) {
-        return done(new Error('No email found in profile'), null);
-      }
-
-      const user = await prisma.users.upsert({
-        where: { google_id: profile.id },
-        update: { name: profile.displayName, email: email },
-        create: {
-          google_id: profile.id,
-          name: profile.displayName,
-          email: email,
-        },
-      });
-      return done(null, user);
-    }
-  )
+app.use(express.json());
+app.use(
+  cors({
+    origin: 'http://localhost:3000', // フロントエンドのオリジンを指定
+    methods: ['GET', 'POST'], // 許可するHTTPメソッドを指定
+    allowedHeaders: ['Content-Type', 'Authorization'], // 許可するヘッダーを指定
+  })
 );
 
-passport.serializeUser((user: any, done: (err: any, id?: number) => void) => {
-  done(null, user.id);
-});
+app.post('/api/users', async (req, res) => {
+  console.log('Request from frontend:', req.body);
+  const { google_id, name, email } = req.body;
 
-passport.deserializeUser(async (id: number, done: (err: any, user?: any | null) => void) => {
-  const user = await prisma.users.findUnique({ where: { id } });
-  done(null, user);
-});
-
-app.get('/api/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
-
-app.get(
-  '/api/auth/callback',
-  passport.authenticate('google', { failureRedirect: '/' }),
-  (req, res) => {
-    res.redirect('http://localhost:3000'); // フロントエンドのURLにリダイレクト
-  }
-);
-
-app.get('/api/auth/user', (req, res) => {
-  if (req.isAuthenticated()) {
-    res.json(req.user);
-  } else {
-    res.status(401).json({ message: 'Not authenticated' });
+  try {
+    const user = await prisma.users.upsert({
+      where: { email },
+      update: { google_id, name },
+      create: { google_id, name, email },
+    });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ error: 'ユーザーの作成に失敗しました。' });
   }
 });
 
-app.get('/', async (req, res) => {
-  const users = await prisma.users.findMany();
-  res.json(users);
-});
-
-app.listen(port, () => {
-  console.log(`Backend server is running at http://localhost:${port}`);
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, () => {
+  console.log(`Server is running on port ${PORT}`);
 });

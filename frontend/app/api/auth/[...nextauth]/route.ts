@@ -5,9 +5,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id: string;
-      name?: string | null;
-      email?: string | null;
-      image?: string | null;
+      name: string;
     };
   }
 }
@@ -20,6 +18,37 @@ export const authOptions: AuthOptions = {
     }),
   ],
   callbacks: {
+    async signIn({ user, account, profile }) {
+      const email = profile?.email;
+      const name = profile?.name;
+      const google_id = profile?.sub;
+      if (!email || !name || !google_id) {
+        return false;
+      }
+
+      try {
+        // バックエンドのAPIエンドポイントにユーザー情報を送信
+        const response = await fetch('http://localhost:3001/api/users', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ google_id, name, email }),
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log('Response from backend:', data);
+      } catch (error) {
+        console.error('Error during fetch:', error);
+        return false;
+      }
+
+      return true;
+    },
     async session({ session, token }) {
       if (token?.id && session.user) {
         session.user.id = token.id as string;
