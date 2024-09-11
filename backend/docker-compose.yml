@@ -1,26 +1,27 @@
 # version: '3.8'
 
 services:
-  db:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: password
-      POSTGRES_DB: myapp
-    ports:
-      - '5432:5432'
-    volumes:
-      - pgdata:/var/lib/postgresql/data
+ db:
+  image: postgres:13
+  environment:
+   POSTGRES_USER: user
+   POSTGRES_PASSWORD: password
+   POSTGRES_DB: myapp
+  ports:
+   - '5432:5432'
+  volumes:
+   - pgdata:/var/lib/postgresql/data
 
-  backend:
-    build: .
-    command: npx ts-node src/index.ts
-    volumes:
-      - .:/app
-    ports:
-      - '3001:3001'
-    depends_on:
-      - db
+ backend:
+  build: .
+  command: npx ts-node src/index.ts
+  volumes:
+   - .:/app
+  ports:
+   - '3001:3001'
+   - '5000:5000'
+  depends_on:
+   - db
 
 volumes:
-  pgdata:
+ pgdata:
