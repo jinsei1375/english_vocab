@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import AddWordDialog from '@/components/AddWordDialog';
-import { useSession } from 'next-auth/react';
 
 export default function Vocabulary() {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -23,7 +22,7 @@ export default function Vocabulary() {
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ word, meaning, userId: 1 }),
+				body: JSON.stringify({ word, meaning, userId: 1 }), // TODO ログインユーザーのIDを取得する
 			});
 
 			console.log('Response from backend:', response);
