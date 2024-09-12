@@ -9,35 +9,55 @@ generator client {
 }
 
 model User {
-  id          Int          @id @default(autoincrement())
-  googleId    String       @unique
-  email       String       @unique
-  name        String
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  deletedAt   DateTime?
+  id          Int          @id @default(autoincrement()) @map("id")
+  googleId    String       @unique @map("google_id")
+  email       String       @unique @map("email")
+  name        String       @map("name")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
   vocabularies Vocabulary[]
+
+  @@map("users")
+}
+
+model PartOfSpeech {
+  id          Int      @id @default(autoincrement()) @map("id")
+  name        String   @unique @map("name")
+  vocabularies Vocabulary[]
+
+  @@map("parts_of_speech")
 }
 
 model Vocabulary {
-  id          Int      @id @default(autoincrement())
-  user_id     Int
-  word        String
-  meaning     String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  deletedAt   DateTime?
-  user        User    @relation(fields: [user_id], references: [id])
+  id          Int      @id @default(autoincrement()) @map("id")
+  userId      Int      @map("user_id")
+  word        String   @map("word")
+  meaning     String   @map("meaning")
+  partOfSpeechId Int? @map("part_of_speech_id") // 品詞（選択）
+  pronunciation String? @map("pronunciation") // 発音記号
+  exampleSentence String? @map("example_sentence") // 例文
+  synonyms    String?  @map("synonyms") // 類義語
+  antonyms    String?  @map("antonyms") // 対義語
+  url         String?  @map("url") // URL
+  memorized   Boolean? @map("memorized") // 覚えたかチェック
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  deletedAt   DateTime? @map("deleted_at")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  partOfSpeech PartOfSpeech? @relation(fields: [partOfSpeechId], references: [id])
+
+  @@map("vocabularies")
 }
 
-// model tests {
-//   id          Int      @id @default(autoincrement())
-//   user_id     Int
-//   vocab_id    Int
-//   score       Int
-//   created_at  DateTime @default(now())
-//   updated_at  DateTime @updatedAt
-//   deleted_at  DateTime?
-//   user        users    @relation(fields: [user_id], references: [id])
-//   vocabulary  vocabularies @relation(fields: [vocab_id], references: [id])
+// model Test {
+//   id          Int      @id @default(autoincrement()) @map("id")
+//   userId      Int      @map("user_id")
+//   score       Int      @map("score")
+//   createdAt   DateTime @default(now()) @map("created_at")
+//   updatedAt   DateTime @updatedAt @map("updated_at")
+//   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+//   vocabulary  Vocabulary @relation(fields: [vocabId], references: [id], onDelete: Cascade)
+
+//   @@map("tests")
 // }

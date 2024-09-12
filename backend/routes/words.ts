@@ -11,7 +11,7 @@ router.post('/word/add', async (req, res) => {
 			data: {
 				word,
 				meaning,
-				user_id: userId,
+				userId: userId,
 			},
 		});
 		res.status(200).json(newWord);
