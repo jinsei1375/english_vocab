@@ -1,13 +1,39 @@
 'use client';
+import axios from 'axios';
 import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import AddWordDialog from '@/components/AddWordDialog';
+import WordList from '@/components/WordList';
 import { useUser } from '@/components/SessionProviderWrapper';
+
+interface Word {
+	id: number;
+	word: string;
+	meaning: string;
+	partOfSpeech: string;
+	pronunciation: string;
+	exampleSentence: string;
+	synonyms: string;
+	antonyms: string;
+	url: string;
+	memorized: boolean;
+}
+
+async function fetchWords(): Promise<Word[]> {
+	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+	const response = await axios.get<Word[]>(`${apiUrl}/api/vocabularies`);
+	return response.data;
+}
 
 export default function Vocabulary() {
 	const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 	const [open, setOpen] = useState(false);
 	const { user } = useUser();
+	const [words, setWords] = useState<Word[]>([]);
+
+	React.useEffect(() => {
+		fetchWords().then(setWords).catch(console.error);
+	}, []);
 
 	const handleClickOpen = () => {
 		setOpen(true);
@@ -23,22 +49,17 @@ export default function Vocabulary() {
 			return;
 		}
 		try {
-			const response = await fetch(`${apiUrl}/api/word/add`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ word, meaning, userId: user.id }), // TODO ログインユーザーのIDを取得する
+			const response = await axios.post<Word>(`${apiUrl}/api/word/add`, {
+				word,
+				meaning,
+				userId: user.id,
 			});
 
 			console.log('Response from backend:', response);
 
-			if (!response.ok) {
-				throw new Error(`HTTP error! status: ${response.status}`);
-			}
-
-			const data = await response.json();
+			const data: Word = response.data;
 			console.log('新しい単語が登録されました:', data);
+			setWords((prevWords) => [...prevWords, data]);
 		} catch (error) {
 			console.error('単語の登録に失敗しました:', error);
 		}
@@ -50,6 +71,7 @@ export default function Vocabulary() {
 			<Button variant="contained" color="primary" onClick={handleClickOpen}>
 				単語を追加
 			</Button>
+			<WordList words={words} />
 			<AddWordDialog open={open} onClose={handleClose} onAddWord={handleAddWord} />
 		</div>
 	);
