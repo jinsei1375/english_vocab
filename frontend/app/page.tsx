@@ -1,10 +1,12 @@
-'use client';
-import PageTitle from '@/components/PageTitle';
+import dynamic from 'next/dynamic';
+
+const PageTitle = dynamic(() => import('@/components/PageTitle'), { ssr: false });
 
 export default function Home() {
-  return (
-    <>
-      <PageTitle title="トップページ" />
-    </>
-  );
+	console.log('server side rendering');
+	return (
+		<>
+			<PageTitle title="トップページ" />
+		</>
+	);
 }
