@@ -1,30 +1,26 @@
 import React from 'react';
 import { Button, Typography } from '@mui/material';
-import { signIn, signOut } from 'next-auth/react';
-
-import { useUser } from '@/components/SessionProviderWrapper';
+import { signIn, signOut, useSession } from 'next-auth/react';
 
 const SessionButtons: React.FC = () => {
-	const { user } = useUser();
+  const { data: session } = useSession();
 
-	return (
-		<>
-			{!user ? (
-				<Button color="inherit" onClick={() => signIn('google')}>
-					Googleでログイン
-				</Button>
-			) : (
-				<>
-					<Typography variant="body1" style={{ marginRight: '1rem' }}>
-						{user.name}
-					</Typography>
-					<Button color="inherit" onClick={() => signOut()}>
-						ログアウト
-					</Button>
-				</>
-			)}
-		</>
-	);
+  return (
+    <>
+      {session ? (
+        <>
+          <Typography>{session.user?.name}</Typography>
+          <Button variant="contained" color="primary" onClick={() => signOut()}>
+            Sign out
+          </Button>
+        </>
+      ) : (
+        <Button variant="contained" color="primary" onClick={() => signIn()}>
+          Sign in
+        </Button>
+      )}
+    </>
+  );
 };
 
 export default SessionButtons;

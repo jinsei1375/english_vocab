@@ -3,7 +3,8 @@ import React, { useState } from 'react';
 import { Button } from '@mui/material';
 import AddWordDialog from '@/components/AddWordDialog';
 import WordList from '@/components/WordList';
-import { useUser } from '@/components/SessionProviderWrapper';
+import PageTitle from '@/components/PageTitle';
+import { useSession } from 'next-auth/react';
 
 interface Word {
   id: number;
@@ -37,8 +38,8 @@ async function fetchWords(): Promise<Word[]> {
 export default function Vocabulary() {
   const apiUrl = process.env.NEXT_PUBLIC_API_URL;
   const [open, setOpen] = useState(false);
-  const { user } = useUser();
   const [words, setWords] = useState<Word[]>([]);
+  const user = { id: 1, name: 'test', email: '' };
 
   React.useEffect(() => {
     fetchWords().then(setWords).catch(console.error);
@@ -66,7 +67,7 @@ export default function Vocabulary() {
         body: JSON.stringify({
           word,
           meaning,
-          userId: user.id,
+          userId: 1,
         }),
       });
 
@@ -81,13 +82,13 @@ export default function Vocabulary() {
   };
 
   return (
-    <div>
-      <p>単語一覧</p>
+    <>
+      <PageTitle title="単語一覧" />
       <Button variant="contained" color="primary" onClick={handleClickOpen}>
         単語を追加
       </Button>
       <WordList words={words} />
       <AddWordDialog open={open} onClose={handleClose} onAddWord={handleAddWord} />
-    </div>
+    </>
   );
 }

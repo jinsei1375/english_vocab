@@ -1,7 +1,10 @@
+'use client';
+import PageTitle from '@/components/PageTitle';
+
 export default function Home() {
-	return (
-		<div>
-			<p>トップページ</p>
-		</div>
-	);
+  return (
+    <>
+      <PageTitle title="トップページ" />
+    </>
+  );
 }
