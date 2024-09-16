@@ -1,24 +1,22 @@
 'use client';
 import React from 'react';
-import Typography, { TypographyProps } from '@mui/material/Typography';
-import { styled } from '@mui/system';
+import Typography from '@mui/material/Typography';
 
 interface PageTitleProps {
 	title: string;
 }
 
-const Title = styled((props: TypographyProps) => <Typography {...props} />)(({ theme }) => ({
-	fontSize: '2rem', // フォントサイズ
-	fontWeight: 'bold', // フォントウェイト
-	textAlign: 'center', // 中央揃え
-	marginTop: '1rem', // 上マージン
-}));
-
 const PageTitle: React.FC<PageTitleProps> = ({ title }) => {
 	return (
-		<Title variant="h4" component="h1" gutterBottom>
+		<Typography
+			variant="h4"
+			component="h1"
+			align="center"
+			gutterBottom
+			style={{ fontSize: '2rem', margin: '1rem' }}
+		>
 			{title}
-		</Title>
+		</Typography>
 	);
 };
 

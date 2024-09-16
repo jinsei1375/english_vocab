@@ -1,12 +1,14 @@
-import dynamic from 'next/dynamic';
-
-const PageTitle = dynamic(() => import('@/components/PageTitle'), { ssr: false });
+import PageTitle from '@/components/PageTitle';
+import Link from 'next/link';
 
 export default function Home() {
-	console.log('server side rendering');
+	console.log('TOP: server side rendering');
 	return (
 		<>
 			<PageTitle title="トップページ" />
+			<Link href="/vocabulary" passHref>
+				単語一覧ページへ
+			</Link>
 		</>
 	);
 }

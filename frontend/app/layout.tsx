@@ -1,24 +1,17 @@
-import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
-import './globals.css';
-import { CssBaseline } from '@mui/material';
-import ClientThemeProvider from '@/components/ClientThemeProvider';
+import React from 'react';
+import Head from 'next/head';
+import { CssBaseline, Box } from '@mui/material';
+import Header2 from '@/components/Header2';
+import SideNav from '@/components/SideNav';
+import '../app/globals.css';
 
-const inter = Inter({ subsets: ['latin'] });
+const drawerWidth = 240;
+const headerHeight = 64; // ヘッダーの高さを指定
 
-export const metadata: Metadata = {
-	title: 'English Vocab',
-	description: '',
-};
-
-export default function RootLayout({
-	children,
-}: Readonly<{
-	children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<html lang="ja">
-			<head>
+			<Head>
 				<link rel="preconnect" href="https://fonts.googleapis.com" />
 				<link rel="preconnect" href="https://fonts.gstatic.com" />
 				<link
@@ -26,12 +19,48 @@ export default function RootLayout({
 					href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
 				/>
 				<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
-			</head>
+			</Head>
 			<body>
 				<CssBaseline />
-				<main>
-					<ClientThemeProvider>{children}</ClientThemeProvider>
-				</main>
+				<Box sx={{ display: 'flex' }}>
+					<Box
+						component="header"
+						sx={{
+							position: 'fixed',
+							top: 0,
+							left: 0,
+							width: '100%',
+							height: `${headerHeight}px`,
+							zIndex: 1100, // ヘッダーが他の要素の上に表示されるようにする
+						}}
+					>
+						<Header2 />
+					</Box>
+					<Box
+						component="nav"
+						sx={{
+							position: 'fixed',
+							top: `${headerHeight}px`,
+							left: 0,
+							width: `${drawerWidth}px`,
+							height: `calc(100% - ${headerHeight}px)`,
+							zIndex: 1000, // サイドバーが他の要素の上に表示されるようにする
+						}}
+					>
+						<SideNav />
+					</Box>
+					<Box
+						component="main"
+						sx={{
+							flexGrow: 1,
+							marginLeft: `${drawerWidth}px`,
+							marginTop: `${headerHeight}px`,
+							padding: 3,
+						}}
+					>
+						{children}
+					</Box>
+				</Box>
 			</body>
 		</html>
 	);

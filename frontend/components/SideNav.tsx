@@ -1,62 +1,58 @@
 import React from 'react';
-import Drawer from '@mui/material/Drawer';
-import List from '@mui/material/List';
-import ListItem from '@mui/material/ListItem';
-import ListItemText from '@mui/material/ListItemText';
-import Divider from '@mui/material/Divider';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTheme } from '@mui/material/styles';
+import { Drawer, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
 import Link from 'next/link';
 
-interface SideNavProps {
-  drawerOpen: boolean;
-  toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
-}
+const drawerWidth = 240;
+const headerHeight = 64; // ヘッダーの高さを指定
 
-const SideNav: React.FC<SideNavProps> = ({ drawerOpen, toggleDrawer }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+const SideNav: React.FC = () => {
+	const drawerContent = (
+		<div>
+			<List>
+				<Link href="/" passHref>
+					<ListItem component="span">
+						<ListItemText primary="Home" />
+					</ListItem>
+				</Link>
+				<Link href="/vocabulary" passHref>
+					<ListItem component="span">
+						<ListItemText primary="Vocabulary" />
+					</ListItem>
+				</Link>
+			</List>
+			<Divider />
+			<List>
+				<Link href="/settings" passHref>
+					<ListItem component="span">
+						<ListItemText primary="Settings" />
+					</ListItem>
+				</Link>
+				<Link href="/profile" passHref>
+					<ListItem component="span">
+						<ListItemText primary="Profile" />
+					</ListItem>
+				</Link>
+			</List>
+		</div>
+	);
 
-  const drawerContent = (
-    <div role="presentation" onClick={toggleDrawer(false)} onKeyDown={toggleDrawer(false)}>
-      <List>
-        <Link href="/" passHref>
-          <ListItem component="span">
-            <ListItemText primary="Home" />
-          </ListItem>
-        </Link>
-        <Link href="/vocabulary" passHref>
-          <ListItem component="span">
-            <ListItemText primary="Vocabulary" />
-          </ListItem>
-        </Link>
-      </List>
-      <Divider />
-      <List>
-        <Link href="/settings" passHref>
-          <ListItem component="span">
-            <ListItemText primary="Settings" />
-          </ListItem>
-        </Link>
-        <Link href="/profile" passHref>
-          <ListItem component="span">
-            <ListItemText primary="Profile" />
-          </ListItem>
-        </Link>
-      </List>
-    </div>
-  );
-
-  return (
-    <Drawer
-      anchor="left"
-      open={drawerOpen}
-      onClose={toggleDrawer(false)}
-      sx={{ width: 240, '& .MuiDrawer-paper': { width: 240 } }}
-    >
-      {drawerContent}
-    </Drawer>
-  );
+	return (
+		<Drawer
+			variant="permanent"
+			anchor="left"
+			sx={{
+				width: drawerWidth,
+				flexShrink: 0,
+				'& .MuiDrawer-paper': {
+					width: drawerWidth,
+					boxSizing: 'border-box',
+					marginTop: `${headerHeight}px`,
+				},
+			}}
+		>
+			{drawerContent}
+		</Drawer>
+	);
 };
 
 export default SideNav;
