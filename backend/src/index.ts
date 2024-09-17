@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import userRoutes from '../routes/users';
-import wordRoutes from '../routes/words';
+import vocabularyRoutes from '../routes/vocabularies';
 
 const app = express();
 console.log('Prisma Client initialized');
@@ -15,7 +15,7 @@ app.use(
 );
 
 app.use('/api', userRoutes);
-app.use('/api', wordRoutes);
+app.use('/api', vocabularyRoutes);
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

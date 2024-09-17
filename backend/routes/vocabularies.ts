@@ -3,7 +3,7 @@ import { prisma } from '../lib/prisma';
 
 const router = Router();
 
-router.post('/word/add', async (req, res) => {
+router.post('/vocabulary/add', async (req, res) => {
 	const { word, meaning, userId } = req.body;
 
 	try {
@@ -30,6 +30,7 @@ router.get('/parts-of-speech', async (req, res) => {
 		res.status(500).json({ error: '品詞カテゴリの取得に失敗しました。' });
 	}
 });
+
 router.get('/vocabularies', async (req, res) => {
 	try {
 		const vocabularies = await prisma.vocabulary.findMany();
@@ -37,6 +38,19 @@ router.get('/vocabularies', async (req, res) => {
 	} catch (error) {
 		console.error('Error fetching parts of speech:', error);
 		res.status(500).json({ error: '品詞カテゴリの取得に失敗しました。' });
+	}
+});
+
+router.get('/vocabularies/:userId', async (req, res) => {
+	try {
+		const userId = parseInt(req.params.userId, 10);
+		const vocabularies = await prisma.vocabulary.findMany({
+			where: { userId: userId as number },
+		});
+		res.status(200).json(vocabularies);
+	} catch (error) {
+		console.error('Error fetching user vocabularies:', error);
+		res.status(500).json({ error: '単語取得に失敗しました' });
 	}
 });
 
