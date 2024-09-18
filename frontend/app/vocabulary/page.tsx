@@ -1,23 +1,21 @@
 import React, { useState } from 'react';
-import { Button } from '@mui/material';
 import AddWordDialog from '@/components/AddWordDialog';
 import WordList from '@/components/WordList';
 import PageTitle from '@/components/PageTitle';
 import { getUserVocabularies } from '../api/vocabulary/route';
+import VocabularyAdd from '@/components/VocabularyAdd';
 
 export default async function Vocabulary() {
-	console.log('vocab: server side rendering');
-	const vocabularies = await getUserVocabularies();
+  console.log('vocab: server side rendering');
+  const vocabularies = await getUserVocabularies();
 
-	return (
-		<>
-			<PageTitle title="単語一覧" />
-			{/* <Button variant="contained" color="primary" onClick={handleClickOpen}>
-				単語を追加
-			</Button> */}
-			{/* 単語一覧 */}
-			<WordList words={vocabularies} />
-			{/* <AddWordDialog open={open} onClose={handleClose} onAddWord={handleAddWord} /> */}
-		</>
-	);
+  return (
+    <>
+      <PageTitle title="単語一覧" />
+      {/* 単語追加 */}
+      <VocabularyAdd />
+      {/* 単語一覧 */}
+      <WordList words={vocabularies} />
+    </>
+  );
 }
