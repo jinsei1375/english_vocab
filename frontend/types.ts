@@ -3,11 +3,16 @@ export interface Word {
 	userId?: number;
 	word: string;
 	meaning: string;
-	partOfSpeech: string;
+	partOfSpeechId: string;
 	pronunciation: string;
 	exampleSentence: string;
 	synonyms: string;
 	antonyms: string;
 	url: string;
 	memorized: boolean;
+}
+
+export interface PartOfSpeech {
+	id: number;
+	name: string;
 }

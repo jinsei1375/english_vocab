@@ -33,7 +33,7 @@ const WordList: React.FC<WordListProps> = ({ words }) => {
 									意味: {word.meaning}
 								</Typography>
 								<Typography variant="body2" color="text.secondary">
-									品詞: {word.partOfSpeech}
+									品詞: {word.partOfSpeechId}
 								</Typography>
 								<Typography variant="body2" color="text.secondary">
 									発音記号: {word.pronunciation}

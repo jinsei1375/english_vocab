@@ -1,4 +1,4 @@
-import { Word } from '@/types';
+import { PartOfSpeech, Word } from '@/types';
 import { getServerSession } from 'next-auth';
 import { fetchUser } from '../user/route';
 import { useSession } from 'next-auth/react';
@@ -79,6 +79,31 @@ export async function getUserVocabularies() {
 		}
 		const vocabularies = await response.json();
 		return vocabularies;
+	} catch (error) {
+		if (error instanceof Error) {
+			console.error(error.message);
+			return [];
+		} else {
+			console.error('An unknown error occurred');
+			return [];
+		}
+	}
+}
+
+// 品詞カテゴリの取得
+export async function fetchPartOfSpeech(): Promise<PartOfSpeech[]> {
+	try {
+		const response = await fetch(`${apiUrl}/api/parts-of-speech`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!response.ok) {
+			throw new Error('Network response was not ok');
+		}
+		const data: PartOfSpeech[] = await response.json();
+		return data;
 	} catch (error) {
 		if (error instanceof Error) {
 			console.error(error.message);

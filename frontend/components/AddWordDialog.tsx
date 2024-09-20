@@ -1,11 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
-import { Word } from '@/types';
+import { PartOfSpeech, Word } from '@/types';
+import { fetchPartOfSpeech } from '@/app/api/vocabulary/route';
+import { MenuItem, Select } from '@mui/material';
 
 interface AddWordDialogProps {
 	open: boolean;
@@ -23,13 +25,26 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord 
 	const [antonyms, setAntonyms] = useState('');
 	const [url, setUrl] = useState('');
 	const [memorized, setMemorized] = useState(false);
+	const [partOfSpeechList, setPartOfSpeechList] = useState<PartOfSpeech[]>([]);
+
+	useEffect(() => {
+		const fetchData = async () => {
+			try {
+				const data: PartOfSpeech[] = await fetchPartOfSpeech();
+				setPartOfSpeechList(data);
+			} catch (error) {
+				console.error('Failed to fetch part of speech:', error);
+			}
+		};
+		fetchData();
+	}, []);
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
 		const newWord: Word = {
 			word,
 			meaning,
-			partOfSpeech,
+			partOfSpeechId: partOfSpeech,
 			pronunciation,
 			exampleSentence,
 			synonyms,
@@ -63,14 +78,19 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord 
 						value={meaning}
 						onChange={(e) => setMeaning(e.target.value)}
 					/>
-					<TextField
+					<Select
 						margin="dense"
 						label="品詞"
-						type="text"
 						fullWidth
 						value={partOfSpeech}
-						onChange={(e) => setPartOfSpeech(e.target.value)}
-					/>
+						onChange={(e) => setPartOfSpeech(e.target.value as string)}
+					>
+						{partOfSpeechList.map((pos) => (
+							<MenuItem key={pos.id} value={pos.name}>
+								{pos.name}
+							</MenuItem>
+						))}
+					</Select>
 					<TextField
 						margin="dense"
 						label="発音"

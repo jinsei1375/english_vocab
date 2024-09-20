@@ -4,32 +4,22 @@ import AddWordDialog from '@/components/AddWordDialog';
 import WordList from '@/components/WordList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
-import { getSession } from 'next-auth/react';
 import { Word } from '@/types';
+import { Box, CircularProgress } from '@mui/material';
+import { getUserId } from '@/utils/auth';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Vocabulary() {
 	const [open, setOpen] = useState(false);
 	const [vocabularies, setVocabularies] = useState<Word[]>([]);
+	const [loading, setLoading] = useState(true);
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
 		const fetchVocabularies = async () => {
 			try {
-				const session = await getSession();
-				if (!session || !session.user || !session.user.email) {
-					throw new Error('User is not authenticated');
-				}
-				const email = session.user.email;
-
-				// ユーザー情報を取得
-				const userResponse = await fetch(`${apiUrl}/api/users/me?email=${email}`);
-				if (!userResponse.ok) {
-					throw new Error('Failed to fetch user information');
-				}
-				const user = await userResponse.json();
-				const userId = user.id;
+				const userId = await getUserId();
 
 				// 単語一覧を取得
 				const vocabulariesResponse = await fetch(`${apiUrl}/api/vocabularies/${userId}`, {
@@ -49,29 +39,18 @@ export default function Vocabulary() {
 				} else {
 					console.error('An unknown error occurred');
 				}
+			} finally {
+				setLoading(false);
 			}
 		};
 		fetchVocabularies();
 	}, []);
 
+	// 新しい単語を追加
 	const handleAddWord = async (newWord: Word) => {
 		try {
-			const session = await getSession();
-			if (!session || !session.user || !session.user.email) {
-				console.error('User is not authenticated');
-				return;
-			}
-			const email = session.user.email;
-
-			// ユーザー情報を取得
-			const userResponse = await fetch(`${apiUrl}/api/users/me?email=${email}`);
-			if (!userResponse.ok) {
-				throw new Error('Failed to fetch user information');
-			}
-			const user = await userResponse.json();
-			const userId = user.id;
-
-			// 新しい単語をバックエンドに追加
+			const userId = await getUserId();
+			console.log('userId:', userId);
 			const response = await fetch(`${apiUrl}/api/vocabulary/add`, {
 				method: 'POST',
 				headers: {
@@ -102,8 +81,20 @@ export default function Vocabulary() {
 			{/* 単語追加 */}
 			<AddButton onClick={() => setOpen(true)} label="単語追加" />
 			{/* 単語一覧 */}
-			{/* ToDo読み込み時はローディング表示 */}
-			<WordList words={vocabularies} />
+			{loading ? (
+				<Box
+					sx={{
+						display: 'flex',
+						justifyContent: 'center',
+						marginTop: '50px',
+						height: '100vh',
+					}}
+				>
+					<CircularProgress />
+				</Box>
+			) : (
+				<WordList words={vocabularies} />
+			)}
 			<AddWordDialog open={open} onClose={() => setOpen(false)} onAddWord={handleAddWord} />
 		</>
 	);
