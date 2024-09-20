@@ -75,6 +75,8 @@ export default function Vocabulary() {
 		setOpen(false);
 	};
 
+	// フラッシュメッセージ表示
+
 	return (
 		<>
 			<PageTitle title="単語一覧" />
