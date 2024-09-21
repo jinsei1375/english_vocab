@@ -7,7 +7,7 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { PartOfSpeech, WordType } from '@/types';
 import { fetchPartOfSpeech } from '@/app/api/vocabulary/route';
-import { MenuItem, Select } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 
 interface AddWordDialogProps {
   open: boolean;
@@ -78,19 +78,20 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord 
             value={meaning}
             onChange={(e) => setMeaning(e.target.value)}
           />
-          <Select
-            margin="dense"
-            label="品詞"
-            fullWidth
-            value={partOfSpeech}
-            onChange={(e) => setPartOfSpeech(e.target.value as string)}
-          >
-            {partOfSpeechList.map((pos) => (
-              <MenuItem key={pos.id} value={pos.name}>
-                {pos.name}
-              </MenuItem>
-            ))}
-          </Select>
+          <FormControl fullWidth margin="dense">
+            <InputLabel id="part-of-speech-label">品詞</InputLabel>
+            <Select
+              labelId="part-of-speech-label"
+              value={partOfSpeech}
+              onChange={(e) => setPartOfSpeech(e.target.value as string)}
+            >
+              {partOfSpeechList.map((pos) => (
+                <MenuItem key={pos.id} value={pos.name}>
+                  {pos.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
           <TextField
             margin="dense"
             label="発音"

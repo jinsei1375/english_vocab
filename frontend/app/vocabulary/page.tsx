@@ -5,7 +5,7 @@ import WordList from '@/components/WordList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import { Box, CircularProgress } from '@mui/material';
+import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal';
 
@@ -17,6 +17,7 @@ export default function Vocabulary() {
   const [loading, setLoading] = useState(true);
   const [selectedWord, setSelectedWord] = useState<WordType | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [flashMessage, setFlashMessage] = useState<string | null>(null);
 
   // クライアントサイドでデータをフェッチ
   useEffect(() => {
@@ -53,7 +54,6 @@ export default function Vocabulary() {
   const handleAddWord = async (newWord: WordType) => {
     try {
       const userId = await getUserId();
-      console.log('userId:', userId);
       const response = await fetch(`${apiUrl}/api/vocabulary/add`, {
         method: 'POST',
         headers: {
@@ -68,6 +68,8 @@ export default function Vocabulary() {
 
       // 新しい単語をローカルの状態に追加
       setVocabularies([...vocabularies, addedWord]);
+      // フラッシュメッセージを表示
+      setFlashMessage('単語が追加されました');
     } catch (error) {
       if (error instanceof Error) {
         console.error(error.message);
@@ -82,8 +84,6 @@ export default function Vocabulary() {
     setSelectedWord(word);
     setModalOpen(true);
   };
-
-  // フラッシュメッセージ表示
 
   return (
     <>
@@ -107,6 +107,11 @@ export default function Vocabulary() {
       )}
       <AddWordDialog open={open} onClose={() => setOpen(false)} onAddWord={handleAddWord} />
       <WordModal open={modalOpen} onClose={() => setModalOpen(false)} word={selectedWord} />
+      <Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
+        <Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>
+          {flashMessage}
+        </Alert>
+      </Snackbar>
     </>
   );
 }
