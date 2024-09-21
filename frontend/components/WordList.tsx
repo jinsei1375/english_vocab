@@ -1,29 +1,36 @@
 import React from 'react';
-import { Box } from '@mui/material';
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 import { WordType } from '@/types';
 import Word from './Word';
+import CheckIcon from '@mui/icons-material/Check';
 
 interface WordListProps {
-  words: WordType[];
-  handleClick: (word: WordType) => void;
+	words: WordType[];
+	handleClick: (word: WordType) => void;
 }
 
 const WordList: React.FC<WordListProps> = ({ words, handleClick }) => {
-  return (
-    <Box sx={{ flexGrow: 1, padding: 2 }}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: 2,
-        }}
-      >
-        {words.map((word) => (
-          <Word key={word.id} word={word} handleClick={handleClick} />
-        ))}
-      </Box>
-    </Box>
-  );
+	return (
+		<TableContainer sx={{ width: '80%', margin: 'auto' }}>
+			<Table>
+				<TableHead>
+					<TableRow>
+						<TableCell>
+							<CheckIcon sx={{ color: 'green' }} />
+						</TableCell>
+						<TableCell sx={{ color: 'white' }}>単語</TableCell>
+						<TableCell sx={{ color: 'white' }}>最終更新日</TableCell>
+						<TableCell sx={{ color: 'white' }}>登録日</TableCell>
+					</TableRow>
+				</TableHead>
+				<TableBody>
+					{words.map((word) => (
+						<Word key={word.id} word={word} handleClick={handleClick}></Word>
+					))}
+				</TableBody>
+			</Table>
+		</TableContainer>
+	);
 };
 
 export default WordList;
