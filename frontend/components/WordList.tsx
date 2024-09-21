@@ -5,9 +5,10 @@ import Word from './Word';
 
 interface WordListProps {
   words: WordType[];
+  handleClick: (word: WordType) => void;
 }
 
-const WordList: React.FC<WordListProps> = ({ words }) => {
+const WordList: React.FC<WordListProps> = ({ words, handleClick }) => {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }}>
       <Box
@@ -18,7 +19,7 @@ const WordList: React.FC<WordListProps> = ({ words }) => {
         }}
       >
         {words.map((word) => (
-          <Word key={word.id} word={word} />
+          <Word key={word.id} word={word} handleClick={handleClick} />
         ))}
       </Box>
     </Box>

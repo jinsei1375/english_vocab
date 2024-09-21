@@ -7,7 +7,7 @@ import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
 import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
-import WordModal from '@/components/WordModal';
+import WordModal from '@/components/WordModal/WordModal';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -103,7 +103,7 @@ export default function Vocabulary() {
           <CircularProgress />
         </Box>
       ) : (
-        <WordList words={vocabularies} />
+        <WordList words={vocabularies} handleClick={handleCardClick} />
       )}
       <AddWordDialog open={open} onClose={() => setOpen(false)} onAddWord={handleAddWord} />
       <WordModal open={modalOpen} onClose={() => setModalOpen(false)} word={selectedWord} />

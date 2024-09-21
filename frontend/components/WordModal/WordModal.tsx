@@ -38,12 +38,14 @@ const WordModal: React.FC<WordModalProps> = ({ open, onClose, word }) => {
             <Typography variant="body2" color="text.secondary">
               対義語: {word.antonyms}
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              URL:{' '}
-              <Link href={word.url} target="_blank" rel="noopener">
-                {word.url}
-              </Link>
-            </Typography>
+            {word.url && (
+              <Typography variant="body2" color="text.secondary">
+                URL:{' '}
+                <Link href={word.url} target="_blank" rel="noopener">
+                  {word.url}
+                </Link>
+              </Typography>
+            )}
             <Typography variant="body2" color="text.secondary">
               覚えた: {word.memorized ? 'はい' : 'いいえ'}
             </Typography>
