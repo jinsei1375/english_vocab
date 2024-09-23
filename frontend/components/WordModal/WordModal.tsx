@@ -21,7 +21,6 @@ const WordModal: React.FC<WordModalProps> = ({ open, onClose, word, handleMemori
 
 	const handleUpdateMemorized = (word: WordType) => {
 		handleMemorizedClick(word);
-		handleClose();
 	};
 	if (!word) return null;
 
@@ -34,8 +33,12 @@ const WordModal: React.FC<WordModalProps> = ({ open, onClose, word, handleMemori
 			}}
 		>
 			<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
-				{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
-				{word.word}
+				<Box display="flex" justifyContent="center" alignItems="center">
+					<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+						{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
+					</Box>
+					<Box sx={{ flexGrow: 1, wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
+				</Box>
 			</DialogTitle>
 			<DialogContent>
 				{showDetails ? (

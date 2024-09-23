@@ -111,6 +111,7 @@ export default function Vocabulary() {
 				vocabulary.id === updatedWord.id ? updatedWord : vocabulary
 			);
 			setVocabularies(updatedVocabularies);
+			setSelectedWord(updatedWord);
 			// フラッシュメッセージを表示
 			setFlashMessage('覚えたステータスが更新されました');
 		} catch (error) {
