@@ -7,24 +7,32 @@ import TextField from '@mui/material/TextField';
 import Button from '@mui/material/Button';
 import { PartOfSpeech, WordType } from '@/types';
 import { fetchPartOfSpeech } from '@/app/api/vocabulary/route';
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
+import {
+	Checkbox,
+	FormControl,
+	FormControlLabel,
+	InputLabel,
+	MenuItem,
+	Select,
+} from '@mui/material';
 
 interface AddWordDialogProps {
 	open: boolean;
 	onClose: () => void;
 	onAddWord: (newWord: WordType) => void;
+	initialWord?: WordType | null;
 }
 
-const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord }) => {
-	const [word, setWord] = useState('');
-	const [meaning, setMeaning] = useState('');
-	const [partOfSpeech, setPartOfSpeech] = useState('');
-	const [pronunciation, setPronunciation] = useState('');
-	const [exampleSentence, setExampleSentence] = useState('');
-	const [synonyms, setSynonyms] = useState('');
-	const [antonyms, setAntonyms] = useState('');
-	const [url, setUrl] = useState('');
-	const [memorized, setMemorized] = useState(false);
+const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord, initialWord }) => {
+	const [word, setWord] = useState(initialWord?.word ?? '');
+	const [meaning, setMeaning] = useState(initialWord?.meaning ?? '');
+	const [partOfSpeech, setPartOfSpeech] = useState(initialWord?.partOfSpeechId ?? '');
+	const [pronunciation, setPronunciation] = useState(initialWord?.pronunciation ?? '');
+	const [exampleSentence, setExampleSentence] = useState(initialWord?.exampleSentence ?? '');
+	const [synonyms, setSynonyms] = useState(initialWord?.synonyms ?? '');
+	const [antonyms, setAntonyms] = useState(initialWord?.antonyms ?? '');
+	const [url, setUrl] = useState(initialWord?.url ?? '');
+	const [memorized, setMemorized] = useState(initialWord?.memorized ?? false);
 	const [partOfSpeechList, setPartOfSpeechList] = useState<PartOfSpeech[]>([]);
 
 	useEffect(() => {
@@ -38,6 +46,20 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord 
 		};
 		fetchData();
 	}, []);
+
+	useEffect(() => {
+		if (initialWord) {
+			setWord(initialWord.word ?? '');
+			setMeaning(initialWord.meaning ?? '');
+			setPartOfSpeech(initialWord.partOfSpeechId ?? '');
+			setPronunciation(initialWord.pronunciation ?? '');
+			setExampleSentence(initialWord.exampleSentence ?? '');
+			setSynonyms(initialWord.synonyms ?? '');
+			setAntonyms(initialWord.antonyms ?? '');
+			setUrl(initialWord.url ?? '');
+			setMemorized(initialWord.memorized ?? false);
+		}
+	}, [initialWord]);
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
@@ -60,7 +82,7 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord 
 
 	return (
 		<Dialog open={open} onClose={onClose}>
-			<DialogTitle>単語を追加</DialogTitle>
+			<DialogTitle textAlign="center">{initialWord ? '単語を編集' : '単語を追加'}</DialogTitle>
 			<DialogContent>
 				<form onSubmit={handleSubmit}>
 					<TextField
@@ -134,12 +156,22 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord 
 						value={url}
 						onChange={(e) => setUrl(e.target.value)}
 					/>
+					<FormControlLabel
+						control={
+							<Checkbox
+								checked={memorized}
+								onChange={(e) => setMemorized(e.target.checked)}
+								color="primary"
+							/>
+						}
+						label="覚えた"
+					/>
 					<DialogActions>
 						<Button onClick={onClose} color="primary">
 							キャンセル
 						</Button>
 						<Button type="submit" color="primary">
-							追加
+							{initialWord ? '更新' : '追加'}
 						</Button>
 					</DialogActions>
 				</form>

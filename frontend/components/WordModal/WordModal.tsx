@@ -9,14 +9,24 @@ interface WordModalProps {
 	open: boolean;
 	onClose: () => void;
 	word: WordType | null;
+	setSelectedWord: React.Dispatch<React.SetStateAction<WordType | null>>;
 	handleMemorizedClick: (word: WordType) => void;
+	handleEditClick: () => void;
 }
 
-const WordModal: React.FC<WordModalProps> = ({ open, onClose, word, handleMemorizedClick }) => {
+const WordModal: React.FC<WordModalProps> = ({
+	open,
+	onClose,
+	word,
+	setSelectedWord,
+	handleMemorizedClick,
+	handleEditClick,
+}) => {
 	const [showDetails, setShowDetails] = useState(false);
 
 	const handleClose = () => {
 		setShowDetails(false);
+		setSelectedWord(null);
 		onClose();
 	};
 
@@ -41,11 +51,14 @@ const WordModal: React.FC<WordModalProps> = ({ open, onClose, word, handleMemori
 			}}
 		>
 			<DialogContent>
-				<Box className={`card ${showDetails ? 'is-flipped' : ''}`} sx={{ backgroundColor: 'white' }}>
+				<Box className={`card ${showDetails ? 'is-flipped' : ''}`}>
 					<Box className={`card-inner`}>
-						<Box className={`card-element ${showDetails ? 'is-flipped' : ''}`}>
+						<Box
+							className={`card-element ${showDetails ? 'is-flipped' : ''}`}
+							sx={{ backgroundColor: 'white' }}
+						>
 							{!showDetails ? (
-								<Box className="card-front-element">
+								<Box className="card-front-element" sx={{ backgroundColor: 'white', minHeight: '300px' }}>
 									<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 										<Box display="flex" justifyContent="center" alignItems="center">
 											<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
@@ -54,11 +67,9 @@ const WordModal: React.FC<WordModalProps> = ({ open, onClose, word, handleMemori
 											<Box sx={{ flexGrow: 1, wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 										</Box>
 									</DialogTitle>
-									<Box>
-										<Box display="flex" justifyContent="center">
-											<Button onClick={handleClose}>閉じる</Button>
-											<Button onClick={() => setShowDetails(true)}>訳をみる</Button>
-										</Box>
+									<Box display="flex" justifyContent="center">
+										<Button onClick={handleClose}>閉じる</Button>
+										<Button onClick={() => setShowDetails(true)}>訳をみる</Button>
 									</Box>
 								</Box>
 							) : (
@@ -102,6 +113,9 @@ const WordModal: React.FC<WordModalProps> = ({ open, onClose, word, handleMemori
 									<Box display="flex" justifyContent="center" mb={1}>
 										<Button color="primary" onClick={() => handleUpdateMemorized(word)}>
 											{word.memorized ? 'チェック外す' : '覚えた'}
+										</Button>
+										<Button color="primary" onClick={handleEditClick}>
+											編集する
 										</Button>
 									</Box>
 									<Box display="flex" justifyContent="center">

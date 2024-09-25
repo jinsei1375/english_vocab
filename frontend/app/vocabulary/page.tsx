@@ -8,7 +8,6 @@ import { WordType } from '@/types';
 import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
-import { getUserVocabularies } from '../api/vocabulary/route';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -83,6 +82,8 @@ export default function Vocabulary() {
 			}
 		}
 		setOpen(false);
+		setModalOpen(false);
+		setSelectedWord(null);
 	};
 
 	// 単語カードをクリック
@@ -123,6 +124,11 @@ export default function Vocabulary() {
 		}
 	};
 
+	// 編集するボタンクリック
+	const handleEditClick = () => {
+		setOpen(true);
+	};
+
 	return (
 		<>
 			<PageTitle title="単語一覧" />
@@ -143,12 +149,19 @@ export default function Vocabulary() {
 			) : (
 				<WordList words={vocabularies} handleClick={handleCardClick} />
 			)}
-			<AddWordDialog open={open} onClose={() => setOpen(false)} onAddWord={handleAddWord} />
+			<AddWordDialog
+				open={open}
+				onClose={() => setOpen(false)}
+				onAddWord={handleAddWord}
+				initialWord={selectedWord}
+			/>
 			<WordModal
 				open={modalOpen}
 				onClose={() => setModalOpen(false)}
 				word={selectedWord}
+				setSelectedWord={setSelectedWord}
 				handleMemorizedClick={handleMemorizedClick}
+				handleEditClick={handleEditClick}
 			/>
 			<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
 				<Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>
