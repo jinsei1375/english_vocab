@@ -16,14 +16,19 @@ import {
 	Select,
 } from '@mui/material';
 
-interface AddWordDialogProps {
+interface WordFormDialogProps {
 	open: boolean;
 	onClose: () => void;
 	onAddWord: (newWord: WordType) => void;
 	initialWord?: WordType | null;
 }
 
-const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord, initialWord }) => {
+const WordFormDialog: React.FC<WordFormDialogProps> = ({
+	open,
+	onClose,
+	onAddWord,
+	initialWord,
+}) => {
 	const [word, setWord] = useState(initialWord?.word ?? '');
 	const [meaning, setMeaning] = useState(initialWord?.meaning ?? '');
 	const [partOfSpeech, setPartOfSpeech] = useState(initialWord?.partOfSpeechId ?? '');
@@ -58,12 +63,23 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord,
 			setAntonyms(initialWord.antonyms ?? '');
 			setUrl(initialWord.url ?? '');
 			setMemorized(initialWord.memorized ?? false);
+		} else {
+			setWord('');
+			setMeaning('');
+			setPartOfSpeech('');
+			setPronunciation('');
+			setExampleSentence('');
+			setSynonyms('');
+			setAntonyms('');
+			setUrl('');
+			setMemorized(false);
 		}
 	}, [initialWord]);
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
 		const newWord: WordType = {
+			id: initialWord?.id,
 			word,
 			meaning,
 			partOfSpeechId: partOfSpeech,
@@ -180,4 +196,4 @@ const AddWordDialog: React.FC<AddWordDialogProps> = ({ open, onClose, onAddWord,
 	);
 };
 
-export default AddWordDialog;
+export default WordFormDialog;

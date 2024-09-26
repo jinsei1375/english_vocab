@@ -12,6 +12,8 @@ interface WordModalProps {
 	setSelectedWord: React.Dispatch<React.SetStateAction<WordType | null>>;
 	handleMemorizedClick: (word: WordType) => void;
 	handleEditClick: () => void;
+	showDetails: boolean;
+	setShowDetails: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const WordModal: React.FC<WordModalProps> = ({
@@ -21,9 +23,9 @@ const WordModal: React.FC<WordModalProps> = ({
 	setSelectedWord,
 	handleMemorizedClick,
 	handleEditClick,
+	showDetails,
+	setShowDetails,
 }) => {
-	const [showDetails, setShowDetails] = useState(false);
-
 	const handleClose = () => {
 		setShowDetails(false);
 		setSelectedWord(null);
@@ -73,7 +75,7 @@ const WordModal: React.FC<WordModalProps> = ({
 									</Box>
 								</Box>
 							) : (
-								<Box className={`card-back-element`}>
+								<Box className={`card-back-element`} sx={{ padding: '20px' }}>
 									<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 										<Box display="flex" justifyContent="center" alignItems="center">
 											<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>

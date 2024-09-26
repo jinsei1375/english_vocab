@@ -1,6 +1,5 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import AddWordDialog from '@/components/AddWordDialog';
 import WordList from '@/components/WordList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
@@ -8,16 +7,18 @@ import { WordType } from '@/types';
 import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
+import WordFormDialog from '@/components/WordFormDialog';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Vocabulary() {
-	const [open, setOpen] = useState(false);
+	const [openForm, setOpenForm] = useState(false);
 	const [vocabularies, setVocabularies] = useState<WordType[]>([]);
 	const [loading, setLoading] = useState(true);
 	const [selectedWord, setSelectedWord] = useState<WordType | null>(null);
 	const [modalOpen, setModalOpen] = useState(false);
 	const [flashMessage, setFlashMessage] = useState<string | null>(null);
+	const [showDetails, setShowDetails] = useState(false);
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -36,7 +37,6 @@ export default function Vocabulary() {
 					throw new Error('Failed to fetch vocabularies');
 				}
 				let vocabularies: WordType[] = await vocabulariesResponse.json();
-				console.log(vocabularies);
 				vocabularies = vocabularies.sort(
 					(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
 				);
@@ -57,7 +57,9 @@ export default function Vocabulary() {
 	// 新しい単語を追加
 	const handleAddWord = async (newWord: WordType) => {
 		try {
+			console.log(newWord);
 			const userId = await getUserId();
+			const isEdit = newWord.id ? true : false;
 			const response = await fetch(`${apiUrl}/api/vocabulary/add`, {
 				method: 'POST',
 				headers: {
@@ -73,7 +75,8 @@ export default function Vocabulary() {
 			// 新しい単語をローカルの状態に追加
 			setVocabularies([addedWord, ...vocabularies]);
 			// フラッシュメッセージを表示
-			setFlashMessage('単語が追加されました');
+			const message = isEdit ? '単語が更新されました' : '単語が追加されました';
+			setFlashMessage(message);
 		} catch (error) {
 			if (error instanceof Error) {
 				console.error(error.message);
@@ -81,13 +84,12 @@ export default function Vocabulary() {
 				console.error('An unknown error occurred');
 			}
 		}
-		setOpen(false);
-		setModalOpen(false);
-		setSelectedWord(null);
+		handleCloseModal();
 	};
 
 	// 単語カードをクリック
 	const handleCardClick = (word: WordType) => {
+		console.log(word);
 		setSelectedWord(word);
 		setModalOpen(true);
 	};
@@ -126,14 +128,22 @@ export default function Vocabulary() {
 
 	// 編集するボタンクリック
 	const handleEditClick = () => {
-		setOpen(true);
+		setOpenForm(true);
+	};
+
+	// モーダルを閉じる
+	const handleCloseModal = () => {
+		setOpenForm(false);
+		setModalOpen(false);
+		setSelectedWord(null);
+		setShowDetails(false);
 	};
 
 	return (
 		<>
 			<PageTitle title="単語一覧" />
 			{/* 単語追加 */}
-			<AddButton onClick={() => setOpen(true)} label="単語追加" />
+			<AddButton onClick={() => setOpenForm(true)} label="単語追加" />
 			{/* 単語一覧 */}
 			{loading ? (
 				<Box
@@ -149,19 +159,21 @@ export default function Vocabulary() {
 			) : (
 				<WordList words={vocabularies} handleClick={handleCardClick} />
 			)}
-			<AddWordDialog
-				open={open}
-				onClose={() => setOpen(false)}
+			<WordFormDialog
+				open={openForm}
+				onClose={handleCloseModal}
 				onAddWord={handleAddWord}
 				initialWord={selectedWord}
 			/>
 			<WordModal
 				open={modalOpen}
-				onClose={() => setModalOpen(false)}
+				onClose={handleCloseModal}
 				word={selectedWord}
 				setSelectedWord={setSelectedWord}
 				handleMemorizedClick={handleMemorizedClick}
 				handleEditClick={handleEditClick}
+				showDetails={showDetails}
+				setShowDetails={setShowDetails}
 			/>
 			<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
 				<Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>
