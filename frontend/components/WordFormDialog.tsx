@@ -82,7 +82,7 @@ const WordFormDialog: React.FC<WordFormDialogProps> = ({
 			id: initialWord?.id,
 			word,
 			meaning,
-			partOfSpeechId: partOfSpeech,
+			partOfSpeechId: Number(partOfSpeech),
 			pronunciation,
 			exampleSentence,
 			synonyms,
@@ -126,7 +126,7 @@ const WordFormDialog: React.FC<WordFormDialogProps> = ({
 							onChange={(e) => setPartOfSpeech(e.target.value as string)}
 						>
 							{partOfSpeechList.map((pos) => (
-								<MenuItem key={pos.id} value={pos.name}>
+								<MenuItem key={pos.id} value={pos.id}>
 									{pos.name}
 								</MenuItem>
 							))}

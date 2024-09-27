@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(
 	cors({
 		origin: 'http://localhost:3000', // フロントエンドのオリジンを指定
-		methods: ['GET', 'POST'], // 許可するHTTPメソッドを指定
+		methods: ['GET', 'POST', 'PUT', 'DELETE'], // 許可するHTTPメソッドを指定
 		allowedHeaders: ['Content-Type', 'Authorization'], // 許可するヘッダーを指定
 	})
 );

@@ -54,14 +54,16 @@ export default function Vocabulary() {
 		fetchVocabularies();
 	}, []);
 
-	// 新しい単語を追加
+	// 新しい単語を追加→編集時の処理
 	const handleAddWord = async (newWord: WordType) => {
 		try {
 			console.log(newWord);
 			const userId = await getUserId();
 			const isEdit = newWord.id ? true : false;
-			const response = await fetch(`${apiUrl}/api/vocabulary/add`, {
-				method: 'POST',
+			const url = isEdit ? `${apiUrl}/api/vocabulary/edit` : `${apiUrl}/api/vocabulary/add`;
+			const method = isEdit ? 'PUT' : 'POST';
+			const response = await fetch(url, {
+				method: method,
 				headers: {
 					'Content-Type': 'application/json',
 				},
@@ -70,10 +72,18 @@ export default function Vocabulary() {
 			if (!response.ok) {
 				throw new Error('Failed to add vocabulary');
 			}
-			const addedWord = await response.json();
+			const addedOrUpdateWord = await response.json();
 
-			// 新しい単語をローカルの状態に追加
-			setVocabularies([addedWord, ...vocabularies]);
+			if (isEdit) {
+				setVocabularies(
+					vocabularies.map((vocabulary) =>
+						vocabulary.id === addedOrUpdateWord.id ? addedOrUpdateWord : vocabulary
+					)
+				);
+			} else {
+				setVocabularies([addedOrUpdateWord, ...vocabularies]);
+			}
+
 			// フラッシュメッセージを表示
 			const message = isEdit ? '単語が更新されました' : '単語が追加されました';
 			setFlashMessage(message);

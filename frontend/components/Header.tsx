@@ -5,22 +5,16 @@ import Typography from '@mui/material/Typography';
 import IconButton from '@mui/material/IconButton';
 import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
+import { getServerSession } from 'next-auth';
 import SessionButtons from './SessionButtons';
 
-interface HeaderProps {
-	toggleDrawer: (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => void;
-	session: {
-		user?: {
-			name?: string;
-		};
-	} | null;
-}
+export default async function Header() {
+	const session = await getServerSession();
 
-const Header: React.FC<HeaderProps> = ({ toggleDrawer, session }) => {
 	return (
 		<AppBar position="static">
 			<Toolbar>
-				<IconButton edge="start" color="inherit" aria-label="menu" onClick={toggleDrawer(true)}>
+				<IconButton edge="start" color="inherit" aria-label="menu">
 					<MenuIcon />
 				</IconButton>
 				<Typography variant="h6" style={{ flexGrow: 1 }}>
@@ -32,6 +26,4 @@ const Header: React.FC<HeaderProps> = ({ toggleDrawer, session }) => {
 			</Toolbar>
 		</AppBar>
 	);
-};
-
-export default Header;
+}

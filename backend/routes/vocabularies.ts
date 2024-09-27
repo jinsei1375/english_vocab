@@ -7,7 +7,7 @@ router.post('/vocabulary/add', async (req, res) => {
 	const {
 		word,
 		meaning,
-		partOfSpeech,
+		partOfSpeechId,
 		pronunciation,
 		exampleSentence,
 		synonyms,
@@ -21,7 +21,7 @@ router.post('/vocabulary/add', async (req, res) => {
 			data: {
 				word,
 				meaning,
-				partOfSpeech,
+				partOfSpeechId,
 				pronunciation,
 				exampleSentence,
 				synonyms,
@@ -35,6 +35,45 @@ router.post('/vocabulary/add', async (req, res) => {
 	} catch (error) {
 		console.error('Error during word creation:', error);
 		res.status(500).json({ error: '単語の登録に失敗しました。' });
+	}
+});
+
+// 編集処理
+router.put('/vocabulary/edit', async (req, res) => {
+	const {
+		id,
+		word,
+		meaning,
+		partOfSpeechId,
+		pronunciation,
+		exampleSentence,
+		synonyms,
+		antonyms,
+		url,
+		memorized,
+		userId,
+	} = req.body;
+	try {
+		console.log('req.body:', req.body);
+		const updatedWord = await prisma.vocabulary.update({
+			where: { id },
+			data: {
+				word,
+				meaning,
+				partOfSpeechId,
+				pronunciation,
+				exampleSentence,
+				synonyms,
+				antonyms,
+				url,
+				memorized,
+				userId,
+			},
+		});
+		res.status(200).json(updatedWord);
+	} catch (error) {
+		console.error('Error during word update:', error);
+		res.status(500).json({ error: '単語の更新に失敗しました。' });
 	}
 });
 

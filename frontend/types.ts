@@ -5,7 +5,7 @@ export interface WordType {
 	userId?: number;
 	word: string;
 	meaning: string;
-	partOfSpeechId: string;
+	partOfSpeechId: number;
 	pronunciation: string;
 	exampleSentence: string;
 	synonyms: string;

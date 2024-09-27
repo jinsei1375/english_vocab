@@ -2,8 +2,8 @@ import '../app/globals.css';
 import React from 'react';
 import Head from 'next/head';
 import { CssBaseline, Box } from '@mui/material';
-import Header2 from '@/components/Header2';
 import SideNav from '@/components/SideNav';
+import Header from '@/components/Header';
 
 const drawerWidth = 240;
 const headerHeight = 64; // ヘッダーの高さを指定
@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 							zIndex: 1100, // ヘッダーが他の要素の上に表示されるようにする
 						}}
 					>
-						<Header2 />
+						<Header />
 					</Box>
 					<Box
 						component="nav"

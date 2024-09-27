@@ -4,6 +4,7 @@ import { WordType } from '@/types';
 import Link from 'next/link';
 import CheckIcon from '@mui/icons-material/Check';
 import './WordModal.css';
+import partOfSpeechIdToName from '@/utils/partOfSpeech';
 
 interface WordModalProps {
 	open: boolean;
@@ -88,7 +89,7 @@ const WordModal: React.FC<WordModalProps> = ({
 										意味: {word.meaning}
 									</Typography>
 									<Typography variant="body2" color="text.secondary">
-										品詞: {word.partOfSpeechId}
+										品詞: {partOfSpeechIdToName(word.partOfSpeechId)}
 									</Typography>
 									<Typography variant="body2" color="text.secondary">
 										発音記号: {word.pronunciation}
