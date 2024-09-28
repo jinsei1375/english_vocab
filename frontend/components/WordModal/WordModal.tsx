@@ -14,6 +14,7 @@ interface WordModalProps {
   handleEditClick: () => void;
   showDetails: boolean;
   setShowDetails: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenDelteConfirm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const WordModal: React.FC<WordModalProps> = ({
@@ -25,6 +26,7 @@ const WordModal: React.FC<WordModalProps> = ({
   handleEditClick,
   showDetails,
   setShowDetails,
+  setOpenDelteConfirm,
 }) => {
   const handleClose = () => {
     setShowDetails(false);
@@ -76,9 +78,7 @@ const WordModal: React.FC<WordModalProps> = ({
                   <Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
                     {word.memorized && <CheckIcon sx={{ color: 'green' }} />}
                   </Box>
-                  <Box sx={{ flexGrow: 1, wordBreak: 'break-word', textAlign: 'center' }}>
-                    {word.word}
-                  </Box>
+                  <Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
                 </Box>
               </DialogTitle>
               <Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-word' }}>
@@ -108,6 +108,9 @@ const WordModal: React.FC<WordModalProps> = ({
                 </Typography>
               )}
               <Box display="flex" justifyContent="center" mb={1}>
+                <Button color="error" onClick={() => setOpenDelteConfirm(true)}>
+                  削除する
+                </Button>
                 <Button color="primary" onClick={() => handleUpdateMemorized(word)}>
                   {word.memorized ? 'チェック外す' : '覚えた'}
                 </Button>
