@@ -11,25 +11,25 @@ const SideNav: React.FC = () => {
 			<List>
 				<Link href="/" passHref>
 					<ListItem component="span">
-						<ListItemText primary="Home" />
+						<ListItemText primary="ホーム" />
 					</ListItem>
 				</Link>
 				<Link href="/vocabulary" passHref>
 					<ListItem component="span">
-						<ListItemText primary="Vocabulary" />
+						<ListItemText primary="単語一覧" />
 					</ListItem>
 				</Link>
 			</List>
 			<Divider />
 			<List>
-				<Link href="/settings" passHref>
+				<Link href="/report" passHref>
 					<ListItem component="span">
-						<ListItemText primary="Settings" />
+						<ListItemText primary="記録" />
 					</ListItem>
 				</Link>
-				<Link href="/profile" passHref>
+				<Link href="/settings" passHref>
 					<ListItem component="span">
-						<ListItemText primary="Profile" />
+						<ListItemText primary="設定" />
 					</ListItem>
 				</Link>
 			</List>
