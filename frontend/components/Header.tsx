@@ -9,6 +9,7 @@ import { getServerSession } from 'next-auth';
 import SessionButtons from './SessionButtons';
 
 export default async function Header() {
+	console.log('Header: server side rendering');
 	const session = await getServerSession();
 
 	return (
