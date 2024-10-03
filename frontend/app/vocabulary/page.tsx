@@ -29,7 +29,7 @@ export default function Vocabulary() {
 				const userId = await getUserId();
 
 				// 単語一覧を取得
-				const vocabulariesResponse = await fetch(`${apiUrl}/api/vocabularies/${userId}`, {
+				const vocabulariesResponse = await fetch(`${apiUrl}/api/users/${userId}/vocabularies/`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
@@ -57,12 +57,12 @@ export default function Vocabulary() {
 	}, []);
 
 	// 新しい単語を追加→編集時の処理
-	const handleAddWord = async (newWord: WordType) => {
+	const handleAddOrEditWord = async (newWord: WordType) => {
 		try {
 			console.log(newWord);
 			const userId = await getUserId();
 			const isEdit = newWord.id ? true : false;
-			const url = isEdit ? `${apiUrl}/api/vocabulary/edit` : `${apiUrl}/api/vocabulary/add`;
+			const url = isEdit ? `${apiUrl}/api/vocabularies/${newWord.id}` : `${apiUrl}/api/vocabularies`;
 			const method = isEdit ? 'PUT' : 'POST';
 			const response = await fetch(url, {
 				method: method,
@@ -99,22 +99,15 @@ export default function Vocabulary() {
 		handleCloseModal();
 	};
 
-	// 単語カードをクリック
-	const handleCardClick = (word: WordType) => {
-		console.log(word);
-		setSelectedWord(word);
-		setModalOpen(true);
-	};
-
 	// 覚えたボタンをクリック
 	const handleMemorizedClick = async (word: WordType) => {
 		try {
-			const response = await fetch(`${apiUrl}/api/vocabulary/memorized`, {
+			const response = await fetch(`${apiUrl}/api/vocabularies/${word.id}/memorized`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify({ id: word.id, memorized: !word.memorized }),
+				body: JSON.stringify({ memorized: !word.memorized }),
 			});
 			if (!response.ok) {
 				throw new Error('Failed to update memorized status');
@@ -141,7 +134,7 @@ export default function Vocabulary() {
 	// 単語削除
 	const handleDeleteWord = async (wordId: number | undefined) => {
 		try {
-			const response = await fetch(`${apiUrl}/api/vocabulary/delete/${wordId}`, {
+			const response = await fetch(`${apiUrl}/api/vocabularies/${wordId}`, {
 				method: 'DELETE',
 				headers: {
 					'Content-Type': 'application/json',
@@ -167,6 +160,13 @@ export default function Vocabulary() {
 				console.error('An unknown error occurred');
 			}
 		}
+	};
+
+	// 単語カードをクリック
+	const handleCardClick = (word: WordType) => {
+		console.log(word);
+		setSelectedWord(word);
+		setModalOpen(true);
 	};
 
 	// 編集するボタンクリック
@@ -206,7 +206,7 @@ export default function Vocabulary() {
 			<WordFormDialog
 				open={openForm}
 				onClose={handleCloseModal}
-				onAddWord={handleAddWord}
+				onAddWord={handleAddOrEditWord}
 				initialWord={selectedWord}
 			/>
 			<WordModal

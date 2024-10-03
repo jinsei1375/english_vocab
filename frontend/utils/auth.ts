@@ -10,7 +10,7 @@ export async function getUserId(): Promise<number> {
 	const email = session.user.email;
 
 	// ユーザー情報を取得
-	const userResponse = await fetch(`${apiUrl}/api/users/me?email=${email}`);
+	const userResponse = await fetch(`${apiUrl}/api/users?email=${email}`);
 	if (!userResponse.ok) {
 		throw new Error('Failed to fetch user information');
 	}

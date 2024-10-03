@@ -15,7 +15,7 @@ export async function fetchReportData() {
 		const user = await fetchUser(email);
 		const userId = user.id;
 
-		const response = await fetch(`${apiUrl}/api/reports/${userId}`, {
+		const response = await fetch(`${apiUrl}/api/users/${userId}/report`, {
 			method: 'GET',
 			headers: {
 				'Content-Type': 'application/json',
