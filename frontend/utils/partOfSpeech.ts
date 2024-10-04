@@ -1,5 +1,5 @@
 // partOfSpeechのidからnameを取得する
-export default function partOfSpeechIdToName(id: number) {
+export default function partOfSpeechIdToName(id: number | null): string {
 	switch (id) {
 		case 1:
 			return '名詞';
