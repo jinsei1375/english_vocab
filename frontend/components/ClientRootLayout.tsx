@@ -5,7 +5,6 @@ import { CssBaseline, Box, useMediaQuery } from '@mui/material';
 import SideNav from '@/components/SideNav';
 import Header from '@/components/Header';
 import { useTheme } from '@mui/material/styles';
-import { useRouter } from 'next/router';
 
 const drawerWidth = 240;
 const headerHeight = 64; // ヘッダーの高さを指定
