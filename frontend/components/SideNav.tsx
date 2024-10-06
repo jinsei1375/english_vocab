@@ -1,45 +1,38 @@
-import React from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider, Box } from '@mui/material';
+import React, { useEffect } from 'react';
+import { Drawer, List, ListItem, ListItemText, Divider, Box, ListItemButton } from '@mui/material';
 import Link from 'next/link';
+import SideNavLink from './SideNavLink';
 
 const drawerWidth = 240;
 const headerHeight = 64; // ヘッダーの高さを指定
 
-const SideNav: React.FC = () => {
+interface SideNavProps {
+	drawerOpen: boolean;
+	toggleDrawer: (open: boolean) => void;
+	isMdUp: boolean;
+}
+
+const SideNav: React.FC<SideNavProps> = ({ drawerOpen, toggleDrawer, isMdUp }) => {
 	const drawerContent = (
-		<div>
+		<Box>
 			<List>
-				<Link href="/" passHref>
-					<ListItem component="span">
-						<ListItemText primary="ホーム" />
-					</ListItem>
-				</Link>
-				<Link href="/vocabulary" passHref>
-					<ListItem component="span">
-						<ListItemText primary="単語一覧" />
-					</ListItem>
-				</Link>
+				<SideNavLink href={'/'} text={'ホーム'} icon={''} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/vocabulary'} text={'単語一覧'} icon={''} toggleDrawer={toggleDrawer} />
 			</List>
 			<Divider />
 			<List>
-				<Link href="/report" passHref>
-					<ListItem component="span">
-						<ListItemText primary="記録" />
-					</ListItem>
-				</Link>
-				<Link href="/settings" passHref>
-					<ListItem component="span">
-						<ListItemText primary="設定" />
-					</ListItem>
-				</Link>
+				<SideNavLink href={'/report'} text={'記録'} icon={''} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/settings'} text={'設定'} icon={''} toggleDrawer={toggleDrawer} />
 			</List>
-		</div>
+		</Box>
 	);
 
 	return (
 		<Drawer
-			variant="permanent"
+			variant={isMdUp ? 'permanent' : 'temporary'}
 			anchor="left"
+			open={drawerOpen}
+			onClose={() => toggleDrawer(false)}
 			sx={{
 				width: drawerWidth,
 				flexShrink: 0,
