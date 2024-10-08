@@ -10,6 +10,7 @@ interface WordListProps {
 }
 
 const WordList: React.FC<WordListProps> = ({ words, handleClick }) => {
+	// ToDo リストをカード表示にする、スマホ時に100%表示にする
 	return (
 		<TableContainer sx={{ width: '80%', margin: 'auto' }}>
 			<Table>

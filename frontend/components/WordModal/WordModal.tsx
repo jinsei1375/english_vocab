@@ -63,12 +63,13 @@ const WordModal: React.FC<WordModalProps> = ({
 			onClose={handleClose}
 			PaperProps={{
 				sx: {
-					maxWidth: '500px', // モーダルの最小幅を設定
+					maxWidth: '400px', // モーダルの最小幅を設定
 					minHeight: '300px', // モーダルの最小高さを設定
 					display: 'flex',
 					flexDirection: 'column',
 					justifyContent: 'space-between',
 					backgroundColor: 'transparent',
+					margin: '0px',
 				},
 			}}
 		>

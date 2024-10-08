@@ -1,6 +1,7 @@
 'use client';
 import React, { useEffect, useState } from 'react';
 import WordList from '@/components/WordList';
+import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
@@ -201,7 +202,7 @@ export default function Vocabulary() {
 					<CircularProgress />
 				</Box>
 			) : (
-				<WordList words={vocabularies} handleClick={handleCardClick} />
+				<WordCardList words={vocabularies} handleClick={handleCardClick} />
 			)}
 			<WordFormDialog
 				open={openForm}
