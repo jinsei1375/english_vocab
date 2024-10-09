@@ -10,16 +10,19 @@ interface WordCardListProps {
 }
 
 const WordList: React.FC<WordCardListProps> = ({ words, handleClick }) => {
-	// ToDo リストをカード表示にする、スマホ時に100%表示にする
+	// ToDo レスポンシブ対応→1列のカード枚数
 	return (
 		<Box
 			sx={{
-				display: 'flex',
-				flexWrap: 'wrap',
-				justifyContent: 'center',
+				display: 'grid',
+				gridTemplateColumns: {
+					sm: '1fr',
+					md: '1fr 1fr',
+					lg: '1fr 1fr 1fr',
+				},
 				gap: 0,
 				width: '100%',
-				maxWidth: '400px',
+				maxWidth: '1200px',
 				margin: 'auto',
 			}}
 		>

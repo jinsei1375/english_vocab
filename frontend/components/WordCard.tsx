@@ -20,15 +20,24 @@ const Word: React.FC<WordCardProps> = ({ word, handleClick }) => {
 			onClick={handleCardClick}
 		>
 			<Card sx={{ margin: '8px', backgroundColor: 'white', color: '#333' }}>
-				<CardContent>
+				<CardContent sx={{ paddingBottom: '16px !important' }}>
 					<Box display="flex" justifyContent="center" alignItems="center">
 						<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
 							{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
 						</Box>
-						<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
+						<Box
+							sx={{
+								wordBreak: 'break-word',
+								overflow: 'hidden',
+								textOverflow: 'ellipsis',
+								display: '-webkit-box',
+								WebkitBoxOrient: 'vertical',
+								WebkitLineClamp: 1, // 2行でテキストを省略
+							}}
+						>
+							{word.word}
+						</Box>
 					</Box>
-					{/* <Typography variant="body2">最終更新日: {word.updatedAt}</Typography>
-							<Typography variant="body2">登録日: {word.createdAt}</Typography> */}
 				</CardContent>
 			</Card>
 		</Box>
