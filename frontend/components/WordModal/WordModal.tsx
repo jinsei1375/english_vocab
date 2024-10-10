@@ -70,6 +70,7 @@ const WordModal: React.FC<WordModalProps> = ({
 					justifyContent: 'space-between',
 					backgroundColor: 'transparent',
 					margin: '0px',
+					boxShadow: 'none',
 				},
 			}}
 		>
