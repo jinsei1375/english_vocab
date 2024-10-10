@@ -5,11 +5,22 @@ import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
+import {
+	Alert,
+	Box,
+	CircularProgress,
+	FormControl,
+	InputLabel,
+	MenuItem,
+	Select,
+	SelectChangeEvent,
+	Snackbar,
+} from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
 import WordFormDialog from '@/components/WordFormDialog';
 import WordDeleteConfirmDialog from '@/components/WordDeleteConfirmDialog';
+import SortSelect from '@/components/SortSelect';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -22,6 +33,7 @@ export default function Vocabulary() {
 	const [flashMessage, setFlashMessage] = useState<string | null>(null);
 	const [showDetails, setShowDetails] = useState(false);
 	const [openDeleteConfirm, setOpenDelteConfirm] = useState(false);
+	const [sortOption, setSortOption] = useState('createdAt');
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -40,9 +52,9 @@ export default function Vocabulary() {
 					throw new Error('Failed to fetch vocabularies');
 				}
 				let vocabularies: WordType[] = await vocabulariesResponse.json();
-				vocabularies = vocabularies.sort(
-					(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-				);
+
+				// 並び替え
+				vocabularies = sortVocabularies(vocabularies, sortOption);
 				setVocabularies(vocabularies);
 			} catch (error) {
 				if (error instanceof Error) {
@@ -55,7 +67,24 @@ export default function Vocabulary() {
 			}
 		};
 		fetchVocabularies();
-	}, []);
+	}, [sortOption]);
+
+	// 並び替え処理
+	const sortVocabularies = (vocabularies: WordType[], option: string) => {
+		switch (option) {
+			case 'updatedAt':
+				return vocabularies.sort(
+					(a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+				);
+			case 'alphabetical':
+				return vocabularies.sort((a, b) => a.word.localeCompare(b.word));
+			case 'createdAt':
+			default:
+				return vocabularies.sort(
+					(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+				);
+		}
+	};
 
 	// 新しい単語を追加→編集時の処理
 	const handleAddOrEditWord = async (newWord: WordType) => {
@@ -187,8 +216,18 @@ export default function Vocabulary() {
 	return (
 		<>
 			<PageTitle title="単語一覧" />
-			{/* 単語追加 */}
-			<AddButton onClick={() => setOpenForm(true)} label="単語追加" />
+			{/* 単語追加, 並び替え */}
+			<Box
+				sx={{
+					display: 'flex',
+					justifyContent: 'space-between',
+					marginBottom: 2,
+					alignItems: 'flex-end',
+				}}
+			>
+				<AddButton onClick={() => setOpenForm(true)} label="単語追加" />
+				<SortSelect sortOption={sortOption} setSortOption={setSortOption} />
+			</Box>
 			{/* 単語一覧 */}
 			{loading ? (
 				<Box

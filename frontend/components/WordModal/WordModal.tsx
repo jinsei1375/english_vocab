@@ -18,6 +18,7 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import { Navigation } from 'swiper/modules';
+import { formatDate } from '@/utils/formatDate';
 
 interface WordModalProps {
 	open: boolean;
@@ -140,6 +141,12 @@ const WordModal: React.FC<WordModalProps> = ({
 													</a>
 												</Typography>
 											)}
+											<Typography variant="body2" color="text.secondary">
+												最終更新日: {formatDate(word.updatedAt)}
+											</Typography>
+											<Typography variant="body2" color="text.secondary">
+												登録日: {formatDate(word.createdAt)}
+											</Typography>
 											<Box display="flex" justifyContent="center" mb={1}>
 												<Button color="error" onClick={() => setOpenDelteConfirm(true)}>
 													削除する

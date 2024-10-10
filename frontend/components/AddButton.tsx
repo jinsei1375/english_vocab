@@ -8,7 +8,7 @@ interface AddButtonProps {
 
 const AddButton: React.FC<AddButtonProps> = ({ onClick, label }) => {
 	return (
-		<Button variant="contained" color="primary" onClick={onClick} sx={{ marginBottom: '12px' }}>
+		<Button variant="contained" color="primary" onClick={onClick} sx={{ height: '40px' }}>
 			{label}
 		</Button>
 	);

@@ -54,7 +54,7 @@ router.get('/:userId/vocabularies', async (req, res) => {
 		const userId = parseInt(req.params.userId, 10);
 		const vocabularies = await prisma.vocabulary.findMany({
 			where: { userId: userId as number, deletedAt: null },
-			orderBy: { updatedAt: 'desc' },
+			orderBy: { createdAt: 'desc' },
 		});
 		res.status(200).json(vocabularies);
 	} catch (error) {

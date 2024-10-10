@@ -6,9 +6,7 @@ const router = Router();
 // 単語追加
 router.post('', async (req, res) => {
 	const { userId, ...newWord } = req.body;
-	console.log('req.body:', req.body);
 	try {
-		console.log('req.body:', req.body);
 		const addedWord = await prisma.vocabulary.create({
 			data: {
 				...newWord,
