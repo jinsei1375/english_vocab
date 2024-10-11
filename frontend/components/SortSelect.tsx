@@ -11,7 +11,7 @@ export default function SortSelect({ sortOption, setSortOption }: SortSelectProp
 	};
 
 	return (
-		<FormControl variant="outlined" sx={{ minWidth: 200 }}>
+		<FormControl variant="outlined" sx={{ minWidth: 150 }}>
 			<InputLabel id="sort-label" sx={{ background: 'white', borderRadius: 1 }}>
 				並び替え
 			</InputLabel>

@@ -16,10 +16,10 @@ const Word: React.FC<WordCardProps> = ({ word, handleClick }) => {
 	return (
 		<Box
 			key={word.id}
-			sx={{ width: '100%', margin: '0px', cursor: 'pointer' }}
+			sx={{ width: '100%', margin: '0', cursor: 'pointer' }}
 			onClick={handleCardClick}
 		>
-			<Card sx={{ margin: '8px', backgroundColor: 'white', color: '#333' }}>
+			<Card sx={{ margin: '0', backgroundColor: 'white', color: '#333' }}>
 				<CardContent sx={{ paddingBottom: '16px !important' }}>
 					<Box display="flex" justifyContent="center" alignItems="center">
 						<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>

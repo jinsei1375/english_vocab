@@ -10,7 +10,6 @@ interface WordCardListProps {
 }
 
 const WordList: React.FC<WordCardListProps> = ({ words, handleClick }) => {
-	// ToDo レスポンシブ対応→1列のカード枚数
 	return (
 		<Box
 			sx={{
@@ -20,7 +19,7 @@ const WordList: React.FC<WordCardListProps> = ({ words, handleClick }) => {
 					md: '1fr 1fr',
 					lg: '1fr 1fr 1fr',
 				},
-				gap: 0,
+				gap: 2,
 				width: '100%',
 				maxWidth: '1200px',
 				margin: 'auto',
