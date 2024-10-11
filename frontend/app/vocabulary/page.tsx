@@ -1,26 +1,16 @@
 'use client';
 import React, { useEffect, useState } from 'react';
-import WordList from '@/components/WordList';
 import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import {
-	Alert,
-	Box,
-	CircularProgress,
-	FormControl,
-	InputLabel,
-	MenuItem,
-	Select,
-	SelectChangeEvent,
-	Snackbar,
-} from '@mui/material';
+import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
 import WordFormDialog from '@/components/WordFormDialog';
 import WordDeleteConfirmDialog from '@/components/WordDeleteConfirmDialog';
 import SortSelect from '@/components/SortSelect';
+import FileterSelect from '@/components/FilterSelect';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -34,6 +24,7 @@ export default function Vocabulary() {
 	const [showDetails, setShowDetails] = useState(false);
 	const [openDeleteConfirm, setOpenDelteConfirm] = useState(false);
 	const [sortOption, setSortOption] = useState('createdAt');
+	const [filterOption, setFilterOption] = useState('all');
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -51,10 +42,13 @@ export default function Vocabulary() {
 				if (!vocabulariesResponse.ok) {
 					throw new Error('Failed to fetch vocabularies');
 				}
-				let vocabularies: WordType[] = await vocabulariesResponse.json();
 
+				let vocabularies: WordType[] = await vocabulariesResponse.json();
+				// 絞り込み
+				vocabularies = filterVocabularies(vocabularies, filterOption);
 				// 並び替え
 				vocabularies = sortVocabularies(vocabularies, sortOption);
+
 				setVocabularies(vocabularies);
 			} catch (error) {
 				if (error instanceof Error) {
@@ -67,7 +61,7 @@ export default function Vocabulary() {
 			}
 		};
 		fetchVocabularies();
-	}, [sortOption]);
+	}, [sortOption, filterOption]);
 
 	// 並び替え処理
 	const sortVocabularies = (vocabularies: WordType[], option: string) => {
@@ -80,9 +74,20 @@ export default function Vocabulary() {
 				return vocabularies.sort((a, b) => a.word.localeCompare(b.word));
 			case 'createdAt':
 			default:
-				return vocabularies.sort(
-					(a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-				);
+				return vocabularies;
+		}
+	};
+
+	// 絞り込み処理
+	const filterVocabularies = (vocabularies: WordType[], option: string) => {
+		switch (option) {
+			case 'memorized':
+				return vocabularies.filter((vocabulary) => vocabulary.memorized);
+			case 'notMemorized':
+				return vocabularies.filter((vocabulary) => !vocabulary.memorized);
+			case 'all':
+			default:
+				return vocabularies;
 		}
 	};
 
@@ -223,10 +228,15 @@ export default function Vocabulary() {
 					justifyContent: 'space-between',
 					marginBottom: 2,
 					alignItems: 'flex-end',
+					flexDirection: { xs: 'column', sm: 'row' },
+					gap: { xs: 2, sm: 0 },
 				}}
 			>
 				<AddButton onClick={() => setOpenForm(true)} label="単語追加" />
-				<SortSelect sortOption={sortOption} setSortOption={setSortOption} />
+				<Box sx={{ display: 'flex', gap: 2 }}>
+					<FileterSelect filterOption={filterOption} setFilterOption={setFilterOption} />
+					<SortSelect sortOption={sortOption} setSortOption={setSortOption} />
+				</Box>
 			</Box>
 			{/* 単語一覧 */}
 			{loading ? (
