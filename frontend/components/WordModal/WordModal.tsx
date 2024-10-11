@@ -142,10 +142,10 @@ const WordModal: React.FC<WordModalProps> = ({
 												</Typography>
 											)}
 											<Typography variant="body2" color="text.secondary">
-												最終更新日: {formatDate(word.updatedAt)}
+												最終更新日: {formatDate(word.updatedAt, true)}
 											</Typography>
 											<Typography variant="body2" color="text.secondary">
-												登録日: {formatDate(word.createdAt)}
+												登録日: {formatDate(word.createdAt, true)}
 											</Typography>
 											<Box display="flex" justifyContent="center" mb={1}>
 												<Button color="error" onClick={() => setOpenDelteConfirm(true)}>
