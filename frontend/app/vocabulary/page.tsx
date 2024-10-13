@@ -4,13 +4,15 @@ import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
+import { Alert, Box, CircularProgress, IconButton, InputBase, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
 import WordFormDialog from '@/components/WordFormDialog';
 import WordDeleteConfirmDialog from '@/components/WordDeleteConfirmDialog';
 import SortSelect from '@/components/SortSelect';
 import FileterSelect from '@/components/FilterSelect';
+import SearchIcon from '@mui/icons-material/Search';
+import SearchInput from '@/components/SearchInput';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -25,6 +27,8 @@ export default function Vocabulary() {
 	const [openDeleteConfirm, setOpenDelteConfirm] = useState(false);
 	const [sortOption, setSortOption] = useState('createdAt');
 	const [filterOption, setFilterOption] = useState('all');
+	const [searchQuery, setSearchQuery] = useState('');
+	const [isSearchOpen, setIsSearchOpen] = useState(false);
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -48,6 +52,8 @@ export default function Vocabulary() {
 				vocabularies = filterVocabularies(vocabularies, filterOption);
 				// 並び替え
 				vocabularies = sortVocabularies(vocabularies, sortOption);
+				// 検索
+				vocabularies = searchVocabularies(vocabularies, searchQuery);
 
 				setVocabularies(vocabularies);
 			} catch (error) {
@@ -61,7 +67,7 @@ export default function Vocabulary() {
 			}
 		};
 		fetchVocabularies();
-	}, [sortOption, filterOption]);
+	}, [sortOption, filterOption, searchQuery]);
 
 	// 並び替え処理
 	const sortVocabularies = (vocabularies: WordType[], option: string) => {
@@ -89,6 +95,12 @@ export default function Vocabulary() {
 			default:
 				return vocabularies;
 		}
+	};
+
+	// 検索処理
+	const searchVocabularies = (vocabularies: WordType[], query: string) => {
+		if (!query) return vocabularies;
+		return vocabularies.filter((word) => word.word.toLowerCase().includes(query.toLowerCase()));
 	};
 
 	// 新しい単語を追加→編集時の処理
@@ -132,6 +144,14 @@ export default function Vocabulary() {
 			}
 		}
 		handleCloseModal();
+	};
+
+	// 検索アイコンクリック
+	const handleSearchIconClick = () => {
+		setIsSearchOpen((prev) => !prev);
+		if (isSearchOpen) {
+			setSearchQuery('');
+		}
 	};
 
 	// 覚えたボタンをクリック
@@ -228,14 +248,29 @@ export default function Vocabulary() {
 					justifyContent: 'space-between',
 					marginBottom: 2,
 					alignItems: 'flex-end',
-					flexDirection: { xs: 'column', sm: 'row' },
-					gap: { xs: 2, sm: 0 },
+					flexDirection: { xs: 'column', lg: 'row' },
+					gap: { xs: 2, lg: 0 },
 				}}
 			>
 				<AddButton onClick={() => setOpenForm(true)} label="単語追加" />
-				<Box sx={{ display: 'flex', gap: 2 }}>
-					<FileterSelect filterOption={filterOption} setFilterOption={setFilterOption} />
-					<SortSelect sortOption={sortOption} setSortOption={setSortOption} />
+				<Box
+					sx={{
+						display: 'flex',
+						gap: 2,
+						flexDirection: { xs: 'column', md: 'row' },
+						alignItems: { xs: 'flex-end', md: 'flex-start' },
+					}}
+				>
+					<SearchInput
+						isSearchOpen={isSearchOpen}
+						searchQuery={searchQuery}
+						setSearchQuery={setSearchQuery}
+						handleSearchIconClick={handleSearchIconClick}
+					/>
+					<Box sx={{ display: 'flex', gap: 2 }}>
+						<FileterSelect filterOption={filterOption} setFilterOption={setFilterOption} />
+						<SortSelect sortOption={sortOption} setSortOption={setSortOption} />
+					</Box>
 				</Box>
 			</Box>
 			{/* 単語一覧 */}
