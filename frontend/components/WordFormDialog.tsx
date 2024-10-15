@@ -22,7 +22,7 @@ interface WordFormDialogProps {
 	onAddWord: (newWord: WordType) => void;
 	initialWord?: WordType | null;
 }
-// バリデーションエラー　→ 品詞選択必須
+
 const WordFormDialog: React.FC<WordFormDialogProps> = ({
 	open,
 	onClose,
@@ -45,8 +45,8 @@ const WordFormDialog: React.FC<WordFormDialogProps> = ({
 			try {
 				const data: PartOfSpeech[] = await fetchPartOfSpeech();
 				setPartOfSpeechList(data);
-			} catch (error) {
-				console.error('Failed to fetch part of speech:', error);
+			} catch {
+				throw new Error('Failed to fetch part of speech');
 			}
 		};
 		fetchData();

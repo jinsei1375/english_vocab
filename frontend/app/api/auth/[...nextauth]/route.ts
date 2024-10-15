@@ -20,7 +20,7 @@ export const authOptions: AuthOptions = {
 		}),
 	],
 	callbacks: {
-		async signIn({ user, account, profile }) {
+		async signIn({ profile }) {
 			const email = profile?.email;
 			const name = profile?.name;
 			const google_id = profile?.sub;
@@ -41,11 +41,7 @@ export const authOptions: AuthOptions = {
 				if (!response.ok) {
 					throw new Error(`HTTP error! status: ${response.status}`);
 				}
-
-				const data = await response.json();
-				console.log('Response from backend:', data);
-			} catch (error) {
-				console.error('Error during fetch:', error);
+			} catch {
 				return false;
 			}
 

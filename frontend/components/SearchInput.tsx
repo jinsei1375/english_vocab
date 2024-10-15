@@ -23,7 +23,7 @@ export default function SearchInput({
 				sx={{
 					width: isSearchOpen ? '200px' : '0px',
 					opacity: isSearchOpen ? 1 : 0,
-					transition: 'width 0.3s',
+					transition: 'width 0.3s, opacity 0.3s',
 					backgroundColor: 'white',
 					color: 'black',
 					borderRadius: '4px',

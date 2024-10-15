@@ -15,14 +15,8 @@ export async function getAllVocabularies() {
 		}
 		const data: WordType[] = await response.json();
 		return data;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error(error.message);
-			return [];
-		} else {
-			console.error('An unknown error occurred');
-			return [];
-		}
+	} catch {
+		throw new Error('Failed to fetch vocabularies');
 	}
 }
 
@@ -41,14 +35,8 @@ export async function addVocabulary(word: Omit<WordType, 'id'>): Promise<WordTyp
 		}
 		const data: WordType = await response.json();
 		return data;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error(error.message);
-			throw error; // エラー時には例外を投げる
-		} else {
-			console.error('An unknown error occurred');
-			throw new Error('An unknown error occurred'); // エラー時には例外を投げる
-		}
+	} catch {
+		throw new Error('Failed to add vocabulary');
 	}
 }
 
@@ -73,19 +61,12 @@ export async function getUserVocabularies() {
 			},
 		});
 		if (!response.ok) {
-			console.log('Failed to fetch user vocabularies', response);
 			throw new Error('Failed to fetch vocabularies');
 		}
 		const vocabularies = await response.json();
 		return vocabularies;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error(error.message);
-			return [];
-		} else {
-			console.error('An unknown error occurred');
-			return [];
-		}
+	} catch {
+		throw new Error('Failed to fetch vocabularies');
 	}
 }
 
@@ -103,14 +84,8 @@ export async function fetchPartOfSpeech(): Promise<PartOfSpeech[]> {
 		}
 		const data: PartOfSpeech[] = await response.json();
 		return data;
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error(error.message);
-			return [];
-		} else {
-			console.error('An unknown error occurred');
-			return [];
-		}
+	} catch {
+		throw new Error('Failed to fetch part of speech');
 	}
 }
 
@@ -127,11 +102,7 @@ export async function updateMemorized(id: number, memorized: boolean): Promise<v
 		if (!response.ok) {
 			throw new Error('Network response was not ok');
 		}
-	} catch (error) {
-		if (error instanceof Error) {
-			console.error(error.message);
-		} else {
-			console.error('An unknown error occurred');
-		}
+	} catch {
+		throw new Error('An unknown error occurred');
 	}
 }

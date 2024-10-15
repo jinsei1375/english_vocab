@@ -4,11 +4,10 @@ import Link from 'next/link';
 interface SideNavLinkProps {
 	href: string;
 	text: string;
-	icon: React.ReactNode;
 	toggleDrawer: (open: boolean) => void;
 }
 
-export default function SideNavLink({ href, text, icon, toggleDrawer }: SideNavLinkProps) {
+export default function SideNavLink({ href, text, toggleDrawer }: SideNavLinkProps) {
 	return (
 		<Link href={href} passHref onClick={() => toggleDrawer(false)}>
 			<ListItemButton>

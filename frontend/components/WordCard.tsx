@@ -1,8 +1,7 @@
 import React from 'react';
-import { TableRow, TableCell, Card, CardContent, Box } from '@mui/material';
+import { Card, CardContent, Box } from '@mui/material';
 import { WordType } from '@/types';
 import CheckIcon from '@mui/icons-material/Check';
-import { formatDate } from '@/utils/formatDate';
 
 interface WordCardProps {
 	word: WordType;

@@ -16,7 +16,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { ArrowBackIos, ArrowForwardIos } from '@mui/icons-material';
 import { Navigation } from 'swiper/modules';
 import { formatDate } from '@/utils/formatDate';
 

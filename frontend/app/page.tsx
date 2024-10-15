@@ -5,7 +5,6 @@ import { getServerSession } from 'next-auth';
 import Link from 'next/link';
 
 export default async function Home() {
-	console.log('TOP: server side rendering');
 	const session = await getServerSession();
 	return (
 		<>

@@ -5,10 +5,8 @@ import { fetchReportData } from '../api/report/route';
 import { formatDate } from '@/utils/formatDate';
 
 export default async function Report() {
-	console.log('rendering Report');
 	const { registrationDate, registeredWords, learnedWords, notLearnedWords } =
 		await fetchReportData();
-	console.log('registrationDate:', registrationDate);
 	return (
 		<>
 			<PageTitle title="記録" />

@@ -22,17 +22,14 @@ export async function fetchReportData() {
 			},
 		});
 		if (!response.ok) {
-			console.log('Failed to fetch user reports', response);
 			throw new Error('Failed to fetch reports');
 		}
 		const reports = await response.json();
 		return reports;
 	} catch (error) {
 		if (error instanceof Error) {
-			console.error(error.message);
 			return [];
 		} else {
-			console.error('An unknown error occurred');
 			return [];
 		}
 	}

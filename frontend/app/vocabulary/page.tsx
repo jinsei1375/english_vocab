@@ -4,14 +4,13 @@ import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import { Alert, Box, CircularProgress, IconButton, InputBase, Snackbar } from '@mui/material';
+import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
 import WordFormDialog from '@/components/WordFormDialog';
 import WordDeleteConfirmDialog from '@/components/WordDeleteConfirmDialog';
 import SortSelect from '@/components/SortSelect';
 import FileterSelect from '@/components/FilterSelect';
-import SearchIcon from '@mui/icons-material/Search';
 import SearchInput from '@/components/SearchInput';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -56,12 +55,8 @@ export default function Vocabulary() {
 				vocabularies = searchVocabularies(vocabularies, searchQuery);
 
 				setVocabularies(vocabularies);
-			} catch (error) {
-				if (error instanceof Error) {
-					console.error(error.message);
-				} else {
-					console.error('An unknown error occurred');
-				}
+			} catch {
+				throw new Error('Failed to fetch vocabularies');
 			} finally {
 				setLoading(false);
 			}
@@ -106,7 +101,6 @@ export default function Vocabulary() {
 	// 新しい単語を追加→編集時の処理
 	const handleAddOrEditWord = async (newWord: WordType) => {
 		try {
-			console.log(newWord);
 			const userId = await getUserId();
 			const isEdit = newWord.id ? true : false;
 			const url = isEdit ? `${apiUrl}/api/vocabularies/${newWord.id}` : `${apiUrl}/api/vocabularies`;
@@ -136,12 +130,8 @@ export default function Vocabulary() {
 			// フラッシュメッセージを表示
 			const message = isEdit ? '単語が更新されました' : '単語が追加されました';
 			setFlashMessage(message);
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error(error.message);
-			} else {
-				console.error('An unknown error occurred');
-			}
+		} catch {
+			throw new Error('Failed to add vocabulary');
 		}
 		handleCloseModal();
 	};
@@ -177,12 +167,8 @@ export default function Vocabulary() {
 			setSelectedWord(updatedWord);
 			// フラッシュメッセージを表示
 			setFlashMessage('覚えたステータスが更新されました');
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error(error.message);
-			} else {
-				console.error('An unknown error occurred');
-			}
+		} catch {
+			throw new Error('Failed to update memorized status');
 		}
 	};
 
@@ -208,18 +194,13 @@ export default function Vocabulary() {
 			// フラッシュメッセージを表示
 			setFlashMessage('削除しました。');
 			handleCloseModal();
-		} catch (error) {
-			if (error instanceof Error) {
-				console.error(error.message);
-			} else {
-				console.error('An unknown error occurred');
-			}
+		} catch {
+			throw new Error('Failed to update memorized status');
 		}
 	};
 
 	// 単語カードをクリック
 	const handleCardClick = (word: WordType) => {
-		console.log(word);
 		setSelectedWord(word);
 		setModalOpen(true);
 	};

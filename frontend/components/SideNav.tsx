@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { Drawer, List, ListItem, ListItemText, Divider, Box, ListItemButton } from '@mui/material';
-import Link from 'next/link';
+import React from 'react';
+import { Drawer, List, Divider, Box } from '@mui/material';
 import SideNavLink from './SideNavLink';
 
 const drawerWidth = 240;
@@ -16,13 +15,13 @@ const SideNav: React.FC<SideNavProps> = ({ drawerOpen, toggleDrawer, isMdUp }) =
 	const drawerContent = (
 		<Box>
 			<List>
-				<SideNavLink href={'/'} text={'ホーム'} icon={''} toggleDrawer={toggleDrawer} />
-				<SideNavLink href={'/vocabulary'} text={'単語一覧'} icon={''} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/'} text={'ホーム'} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/vocabulary'} text={'単語一覧'} toggleDrawer={toggleDrawer} />
 			</List>
 			<Divider />
 			<List>
-				<SideNavLink href={'/report'} text={'記録'} icon={''} toggleDrawer={toggleDrawer} />
-				<SideNavLink href={'/settings'} text={'設定'} icon={''} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/report'} text={'記録'} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/settings'} text={'設定'} toggleDrawer={toggleDrawer} />
 			</List>
 		</Box>
 	);
