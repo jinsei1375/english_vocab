@@ -8,7 +8,7 @@
 	"parser": "@typescript-eslint/parser",
 	"plugins": ["@typescript-eslint", "json"],
 	"rules": {
-		"no-console": "error",
+		"no-console": ["error", { "allow": ["warn", "error"] }],
 		"@next/next/no-img-element": "off",
 		"@typescript-eslint/no-explicit-any": "off"
 	},
