@@ -17,6 +17,7 @@ const SideNav: React.FC<SideNavProps> = ({ drawerOpen, toggleDrawer, isMdUp }) =
 			<List>
 				<SideNavLink href={'/'} text={'ホーム'} toggleDrawer={toggleDrawer} />
 				<SideNavLink href={'/vocabulary'} text={'単語一覧'} toggleDrawer={toggleDrawer} />
+				<SideNavLink href={'/test'} text={'テスト'} toggleDrawer={toggleDrawer} />
 			</List>
 			<Divider />
 			<List>
