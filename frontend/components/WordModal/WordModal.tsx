@@ -30,6 +30,8 @@ interface WordModalProps {
 	setShowDetails: React.Dispatch<React.SetStateAction<boolean>>;
 	setOpenDelteConfirm: React.Dispatch<React.SetStateAction<boolean>>;
 	vocabularies: WordType[];
+	isTestMode?: boolean;
+	handleTestAnswer?: (isCorrect: boolean) => void;
 }
 
 const WordModal: React.FC<WordModalProps> = ({
@@ -43,6 +45,8 @@ const WordModal: React.FC<WordModalProps> = ({
 	setShowDetails,
 	setOpenDelteConfirm,
 	vocabularies,
+	isTestMode,
+	handleTestAnswer,
 }) => {
 	const handleClose = () => {
 		setShowDetails(false);
@@ -75,7 +79,7 @@ const WordModal: React.FC<WordModalProps> = ({
 			}}
 		>
 			<Box display="flex" alignItems="center">
-				<IconButton className="swiper-button-prev">{/* <ArrowBackIos /> */}</IconButton>
+				{!isTestMode && <IconButton className="swiper-button-prev"></IconButton>}
 				<Swiper
 					initialSlide={initialSlideIndex}
 					onSlideChange={(swiper) => setSelectedWord(vocabularies[swiper.activeIndex])}
@@ -84,6 +88,7 @@ const WordModal: React.FC<WordModalProps> = ({
 						prevEl: '.swiper-button-prev',
 						nextEl: '.swiper-button-next',
 					}}
+					allowTouchMove={isTestMode ? false : true}
 					style={{ width: '100%' }}
 				>
 					{vocabularies.map((vocabulary) => (
@@ -91,20 +96,24 @@ const WordModal: React.FC<WordModalProps> = ({
 							<DialogContent sx={{ position: 'relative', minHeight: '300px' }}>
 								<Box className={`flip-card ${showDetails ? 'flipped' : ''}`} sx={{ minHeight: '300px' }}>
 									<Box className="flip-card-inner" sx={{ minHeight: '300px' }}>
+										{/* カード全面 */}
 										<Box className="flip-card-front">
 											<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 												<Box display="flex" justifyContent="center" alignItems="center">
-													<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-														{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
-													</Box>
+													{!isTestMode && (
+														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+															{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
+														</Box>
+													)}
 													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 												</Box>
 											</DialogTitle>
 											<Box display="flex" justifyContent="center">
-												<Button onClick={handleClose}>閉じる</Button>
+												{!isTestMode && <Button onClick={handleClose}>閉じる</Button>}
 												<Button onClick={() => setShowDetails(true)}>訳をみる</Button>
 											</Box>
 										</Box>
+										{/* カード裏面 */}
 										<Box className="flip-card-back">
 											<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 												<Box display="flex" justifyContent="center" alignItems="center">
@@ -140,27 +149,40 @@ const WordModal: React.FC<WordModalProps> = ({
 													</a>
 												</Typography>
 											)}
-											<Typography variant="body2" color="text.secondary">
-												最終更新日: {formatDate(word.updatedAt, true)}
-											</Typography>
-											<Typography variant="body2" color="text.secondary">
-												登録日: {formatDate(word.createdAt, true)}
-											</Typography>
-											<Box display="flex" justifyContent="center" mb={1}>
-												<Button color="error" onClick={() => setOpenDelteConfirm(true)}>
-													削除する
-												</Button>
-												<Button color="primary" onClick={() => handleUpdateMemorized(word)}>
-													{word.memorized ? 'チェック外す' : '覚えた'}
-												</Button>
-												<Button color="primary" onClick={handleEditClick}>
-													編集する
-												</Button>
-											</Box>
-											<Box display="flex" justifyContent="center">
-												<Button onClick={handleClose}>閉じる</Button>
-												<Button onClick={() => setShowDetails(false)}>戻る</Button>
-											</Box>
+											{isTestMode ? (
+												<Box>
+													<Button variant="contained" color="success" onClick={() => handleTestAnswer?.(true)}>
+														◯
+													</Button>
+													<Button variant="contained" color="error" onClick={() => handleTestAnswer?.(false)}>
+														✖️
+													</Button>
+												</Box>
+											) : (
+												<Box>
+													<Typography variant="body2" color="text.secondary">
+														最終更新日: {formatDate(word.updatedAt, true)}
+													</Typography>
+													<Typography variant="body2" color="text.secondary">
+														登録日: {formatDate(word.createdAt, true)}
+													</Typography>
+													<Box display="flex" justifyContent="center" mb={1}>
+														<Button color="error" onClick={() => setOpenDelteConfirm(true)}>
+															削除する
+														</Button>
+														<Button color="primary" onClick={() => handleUpdateMemorized(word)}>
+															{word.memorized ? 'チェック外す' : '覚えた'}
+														</Button>
+														<Button color="primary" onClick={handleEditClick}>
+															編集する
+														</Button>
+													</Box>
+													<Box display="flex" justifyContent="center">
+														<Button onClick={handleClose}>閉じる</Button>
+														<Button onClick={() => setShowDetails(false)}>戻る</Button>
+													</Box>
+												</Box>
+											)}
 										</Box>
 									</Box>
 								</Box>
@@ -168,7 +190,7 @@ const WordModal: React.FC<WordModalProps> = ({
 						</SwiperSlide>
 					))}
 				</Swiper>
-				<IconButton className="swiper-button-next">{/* <ArrowForwardIos /> */}</IconButton>
+				{!isTestMode && <IconButton className="swiper-button-next"></IconButton>}
 			</Box>
 		</Dialog>
 	);
