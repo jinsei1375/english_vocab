@@ -17,6 +17,8 @@ model User {
   updatedAt   DateTime     @updatedAt @map("updated_at")
   deletedAt   DateTime?    @map("deleted_at")
   vocabularies Vocabulary[]
+  testResults TestResult[]
+  testHistories TestHistory[]
 
   @@map("users")
 }
@@ -49,18 +51,36 @@ model Vocabulary {
   deletedAt   DateTime? @map("deleted_at")
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   partOfSpeech PartOfSpeech? @relation(fields: [partOfSpeechId], references: [id])
+  testResults TestResult[]
 
   @@map("vocabularies")
 }
 
-// model Test {
-//   id          Int      @id @default(autoincrement()) @map("id")
-//   userId      Int      @map("user_id")
-//   score       Int      @map("score")
-//   createdAt   DateTime @default(now()) @map("created_at")
-//   updatedAt   DateTime @updatedAt @map("updated_at")
-//   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-//   vocabulary  Vocabulary @relation(fields: [vocabId], references: [id], onDelete: Cascade)
+model TestResult {
+  id            Int          @id @default(autoincrement()) @map("id")
+  userId        Int          @map("user_id")
+  vocabularyId  Int          @map("vocabulary_id")
+  testHistoryId Int          @map("test_history_id")
+  isCorrect     Boolean      @map("is_correct")
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+  deletedAt     DateTime?    @map("deleted_at")
+  user          User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  vocabulary    Vocabulary   @relation(fields: [vocabularyId], references: [id], onDelete: Cascade)
+  testHistory   TestHistory  @relation(fields: [testHistoryId], references: [id], onDelete: Cascade)
 
-//   @@map("tests")
-// }
+  @@map("test_results")
+}
+
+model TestHistory {
+  id          Int          @id @default(autoincrement()) @map("id")
+  userId      Int          @map("user_id")
+  testDate    DateTime     @default(now()) @map("test_date")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  deletedAt   DateTime?    @map("deleted_at")
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testResults TestResult[]
+
+  @@map("test_histories")
+}

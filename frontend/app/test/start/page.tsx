@@ -11,7 +11,7 @@ const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 export default function Start() {
 	const [testWords, setTestWords] = useState<WordType[]>([]);
 	const [currentIndex, setCurrentIndex] = useState(0);
-	const [results, setResults] = useState<boolean[]>([]);
+	const [results, setResults] = useState<{ wordId: number; isCorrect: boolean }[]>([]);
 	const [modalOpen, setModalOpen] = useState(true);
 	const [showDetails, setShowDetails] = useState(false);
 
@@ -40,13 +40,15 @@ export default function Start() {
 
 	// テストの回答を処理
 	const handleTestAnswer = (isCorrect: boolean) => {
-		setResults([...results, isCorrect]);
+		const newResults = [...results, { wordId: testWords[currentIndex].id!, isCorrect }];
+		setResults(newResults);
 		setCurrentIndex(currentIndex + 1);
 		setShowDetails(false);
 		if (currentIndex < 9) {
 			setModalOpen(true);
 		} else {
 			setModalOpen(false);
+			console.log(results);
 		}
 	};
 
