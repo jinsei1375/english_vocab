@@ -63,16 +63,20 @@ router.get('/:userId/vocabularies', async (req, res) => {
 	}
 });
 
-// ユーザーのテスト用単語取得
+// ユーザーのテスト用単語取得→ランダム10問取得するようにする
 router.get('/:userId/vocabularies/test/', async (req, res) => {
 	try {
 		const userId = parseInt(req.params.userId, 10);
 		const vocabularies = await prisma.vocabulary.findMany({
 			where: { userId: userId as number, deletedAt: null },
 			orderBy: { createdAt: 'desc' },
-			take: 10,
 		});
-		res.status(200).json(vocabularies);
+
+		// ランダム10単語を選択
+		const shuffled = vocabularies.sort(() => 0.5 - Math.random());
+		const randomVocabularies = shuffled.slice(0, 10);
+
+		res.status(200).json(randomVocabularies);
 	} catch (error) {
 		console.error('Error fetching user vocabularies:', error);
 		res.status(500).json({ error: '単語取得に失敗しました' });
