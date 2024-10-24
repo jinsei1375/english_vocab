@@ -115,4 +115,33 @@ router.get('/:userId/report', async (req, res) => {
 	}
 });
 
+// テスト結果の保存
+router.post('/:userId/testResults', async (req, res) => {
+	const userId = parseInt(req.params.userId, 10);
+	const { results } = req.body;
+
+	try {
+		const testHistory = await prisma.testHistory.create({
+			data: {
+				userId,
+				testDate: new Date(),
+			},
+		});
+
+		const testResults = await prisma.testResult.createMany({
+			data: results.map((result: { wordId: number; isCorrect: boolean }) => ({
+				userId,
+				vocabularyId: result.wordId,
+				isCorrect: result.isCorrect,
+				testHistoryId: testHistory.id,
+			})),
+		});
+
+		res.status(200).json(testResults);
+	} catch (error) {
+		console.error('Error during test results saving:', error);
+		res.status(500).json({ error: 'テスト結果の保存に失敗しました。' });
+	}
+});
+
 export default router;

@@ -4,6 +4,7 @@ import PageTitle from '@/components/PageTitle';
 import WordModal from '@/components/WordModal/WordModal';
 import { WordType } from '@/types';
 import { getUserId } from '@/utils/auth';
+import { Box, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -48,7 +49,33 @@ export default function Start() {
 			setModalOpen(true);
 		} else {
 			setModalOpen(false);
+			saveTestResults(newResults);
 			console.log(results);
+		}
+	};
+
+	const saveTestResults = async (
+		results: {
+			wordId: number;
+			isCorrect: boolean;
+		}[]
+	) => {
+		try {
+			const userId = await getUserId();
+			const response = await fetch(`${apiUrl}/api/users/${userId}/testResults`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ results }),
+			});
+			if (!response.ok) {
+				throw new Error('Failed to save test results');
+			}
+			const data = await response.json();
+			console.log('Test results saved:', data);
+		} catch (error) {
+			console.error('Error saving test results:', error);
 		}
 	};
 
@@ -56,22 +83,35 @@ export default function Start() {
 	const handleCloseModal = () => setModalOpen(false);
 
 	return (
-		<>
-			<PageTitle title="テスト" />
-			<WordModal
-				open={modalOpen}
-				onClose={() => {}}
-				word={testWords[currentIndex]}
-				setSelectedWord={() => {}}
-				handleMemorizedClick={() => {}}
-				handleEditClick={() => {}}
-				showDetails={showDetails}
-				setShowDetails={setShowDetails}
-				setOpenDelteConfirm={() => {}}
-				vocabularies={testWords}
-				isTestMode={true}
-				handleTestAnswer={handleTestAnswer}
-			/>
-		</>
+		<Box>
+			{currentIndex < 10 ? (
+				<>
+					<PageTitle title="テスト" />
+					<WordModal
+						open={modalOpen}
+						onClose={() => {}}
+						word={testWords[currentIndex]}
+						setSelectedWord={() => {}}
+						handleMemorizedClick={() => {}}
+						handleEditClick={() => {}}
+						showDetails={showDetails}
+						setShowDetails={setShowDetails}
+						setOpenDelteConfirm={() => {}}
+						vocabularies={testWords}
+						isTestMode={true}
+						handleTestAnswer={handleTestAnswer}
+					/>
+				</>
+			) : (
+				<Box>
+					<PageTitle title="テスト結果" />
+					{results.map((result, index) => (
+						<Typography key={index} variant="body1">
+							{testWords[index].word}: {result.isCorrect ? '◯' : '✖️'}
+						</Typography>
+					))}
+				</Box>
+			)}
+		</Box>
 	);
 }
