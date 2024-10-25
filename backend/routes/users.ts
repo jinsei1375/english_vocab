@@ -115,6 +115,22 @@ router.get('/:userId/report', async (req, res) => {
 	}
 });
 
+// ユーザーのテスト履歴取得
+router.get('/:userId/testHistory', async (req, res) => {
+	const userId = parseInt(req.params.userId, 10);
+	try {
+		const testHistories = await prisma.testHistory.findMany({
+			where: { userId },
+			orderBy: { testDate: 'desc' },
+		});
+
+		res.status(200).json(testHistories);
+	} catch (error) {
+		console.error('Error during test history fetching:', error);
+		res.status(500).json({ error: 'テスト履歴の取得に失敗しました。' });
+	}
+});
+
 // テスト結果の保存
 router.post('/:userId/testResults', async (req, res) => {
 	const userId = parseInt(req.params.userId, 10);

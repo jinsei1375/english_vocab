@@ -19,8 +19,10 @@ export const config = {
 		'/vocabulary/:path*',
 		'/report/:path*',
 		'/settings/:path*',
+		'/test/:path*',
 		'/api/vocabularies/:path*',
 		'/api/reports/:path*',
 		'/api/settings/:path*',
+		'/api/users/:path*',
 	], // 認証が必要なパスを指定
 };
