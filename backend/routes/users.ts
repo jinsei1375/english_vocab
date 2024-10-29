@@ -121,6 +121,13 @@ router.get('/:userId/testHistory', async (req, res) => {
 	try {
 		const testHistories = await prisma.testHistory.findMany({
 			where: { userId },
+			include: {
+				testResults: {
+					include: {
+						vocabulary: true,
+					},
+				},
+			},
 			orderBy: { testDate: 'desc' },
 		});
 
@@ -128,6 +135,32 @@ router.get('/:userId/testHistory', async (req, res) => {
 	} catch (error) {
 		console.error('Error during test history fetching:', error);
 		res.status(500).json({ error: 'テスト履歴の取得に失敗しました。' });
+	}
+});
+
+// ユーザーのテスト履歴取得
+router.get('/:userId/testHistory/:testHistoryId', async (req, res) => {
+	const testHistoryId = parseInt(req.params.testHistoryId, 10);
+	try {
+		const testHistory = await prisma.testHistory.findUnique({
+			where: { id: testHistoryId },
+			include: {
+				testResults: {
+					include: {
+						vocabulary: true,
+					},
+				},
+			},
+		});
+
+		if (!testHistory) {
+			return res.status(404).json({ error: 'Test history not found' });
+		}
+
+		res.status(200).json(testHistory);
+	} catch (error) {
+		console.error('Error during test history fetching:', error);
+		res.status(500).json({ error: 'テスト履歴詳細の取得に失敗しました。' });
 	}
 });
 

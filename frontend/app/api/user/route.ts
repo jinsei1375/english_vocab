@@ -29,3 +29,22 @@ export async function getTestHistories() {
 		console.error('Error fetching test histories:', error);
 	}
 }
+
+export async function getTestHistory(testHistoryId: number) {
+	try {
+		const userId = await getUserIdBySsr();
+		const response = await fetch(`${apiUrl}/api/users/${userId}/testHistory/${testHistoryId}`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!response.ok) {
+			throw new Error('Failed to fetch test history');
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error fetching test history:', error);
+	}
+}

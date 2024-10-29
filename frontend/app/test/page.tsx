@@ -1,12 +1,29 @@
 import LinkButton from '@/components/LinkButton';
 import PageTitle from '@/components/PageTitle';
-import { Box, Typography } from '@mui/material';
+import {
+	Box,
+	Paper,
+	Table,
+	TableBody,
+	TableCell,
+	TableContainer,
+	TableHead,
+	TableRow,
+	Typography,
+	Link,
+} from '@mui/material';
 import { getTestHistories } from '../api/user/route';
 import { formatDate } from '@/utils/formatDate';
+import { useRouter } from 'next/navigation';
 
 export default async function Test() {
 	console.log('Test');
+	// const router = useRouter();
 	const testHistories = await getTestHistories();
+
+	// const handleRowClick = (testHistoryId: number) => {
+	// 	router.push(`/test/results/${testHistoryId}`);
+	// };
 
 	return (
 		<>
@@ -22,14 +39,35 @@ export default async function Test() {
 				>
 					テスト履歴
 				</Typography>
-				{testHistories &&
-					testHistories.map((testHistory: any, index: number) => (
-						<Box key={testHistory.id} style={{ margin: '1rem' }}>
-							<Typography variant="h6" component="h3" gutterBottom>
-								{index + 1}. {formatDate(testHistory.testDate, true)}
-							</Typography>
-						</Box>
-					))}
+				<TableContainer component={Paper}>
+					<Table>
+						<TableHead>
+							<TableRow>
+								<TableCell>番号</TableCell>
+								<TableCell>テスト日</TableCell>
+								<TableCell>問題数</TableCell>
+								<TableCell>正解数</TableCell>
+								<TableCell></TableCell>
+							</TableRow>
+						</TableHead>
+						<TableBody>
+							{testHistories &&
+								testHistories.map((testHistory: any, index: number) => (
+									<TableRow key={testHistory.id}>
+										<TableCell>{index + 1}</TableCell>
+										<TableCell>{formatDate(testHistory.testDate, true)}</TableCell>
+										<TableCell>{testHistory.testResults.length}</TableCell>
+										<TableCell>
+											{testHistory.testResults.filter((result: any) => result.isCorrect).length}
+										</TableCell>
+										<TableCell>
+											<LinkButton label="詳細" href={`/test/result/${testHistory.id}`} />
+										</TableCell>
+									</TableRow>
+								))}
+						</TableBody>
+					</Table>
+				</TableContainer>
 			</Box>
 		</>
 	);
