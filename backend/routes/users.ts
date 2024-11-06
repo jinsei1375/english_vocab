@@ -103,11 +103,17 @@ router.get('/:userId/report', async (req, res) => {
 		const memorizedWords = vocabularies.filter((v) => v.memorized).length;
 		const unmemorizedWords = totalWords - memorizedWords;
 
+		// テスト実施回数取得
+		const testHistoryCount = await prisma.testHistory.count({
+			where: { userId },
+		});
+
 		res.status(200).json({
 			registrationDate: user.createdAt,
 			registeredWords: totalWords,
 			learnedWords: memorizedWords,
 			notLearnedWords: unmemorizedWords,
+			testHistoryCount,
 		});
 	} catch (error) {
 		console.error('Error during report fetching:', error);
