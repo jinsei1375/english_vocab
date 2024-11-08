@@ -1,16 +1,8 @@
-import {
-	Box,
-	Typography,
-	Table,
-	TableBody,
-	TableCell,
-	TableContainer,
-	TableHead,
-	TableRow,
-	Paper,
-} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { formatDate } from '@/utils/formatDate';
 import { getTestHistory } from '@/app/api/user/route';
+import TestDetailTable from '@/components/TestDetailTable';
+import PageTitle from '@/components/PageTitle';
 
 export default async function TestHistory({
 	params,
@@ -29,31 +21,12 @@ export default async function TestHistory({
 	}
 
 	return (
-		<Box sx={{ textAlign: 'center', marginTop: '20px' }}>
-			<Typography variant="h4">テスト結果詳細</Typography>
-			<Typography variant="h6" gutterBottom>
-				テスト日: {formatDate(testHistory.testDate, true)}
+		<Box sx={{ textAlign: 'center' }}>
+			<PageTitle title="テスト結果詳細" />
+			<Typography variant="h6" sx={{ marginBottom: '16px' }}>
+				テスト実施日時: {formatDate(testHistory.testDate, true)}
 			</Typography>
-			<TableContainer component={Paper}>
-				<Table>
-					<TableHead>
-						<TableRow>
-							<TableCell>番号</TableCell>
-							<TableCell>単語</TableCell>
-							<TableCell>正解/不正解</TableCell>
-						</TableRow>
-					</TableHead>
-					<TableBody>
-						{testHistory.testResults.map((result: any, index: number) => (
-							<TableRow key={result.id}>
-								<TableCell>{index + 1}</TableCell>
-								<TableCell>{result.vocabulary.word}</TableCell>
-								<TableCell>{result.isCorrect ? '◯' : '✖️'}</TableCell>
-							</TableRow>
-						))}
-					</TableBody>
-				</Table>
-			</TableContainer>
+			<TestDetailTable testHistory={testHistory} />
 		</Box>
 	);
 }

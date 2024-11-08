@@ -10,20 +10,12 @@ import {
 	TableHead,
 	TableRow,
 	Typography,
-	Link,
 } from '@mui/material';
 import { getTestHistories } from '../api/user/route';
 import { formatDate } from '@/utils/formatDate';
-import { useRouter } from 'next/navigation';
 
 export default async function Test() {
-	console.log('Test');
-	// const router = useRouter();
 	const testHistories = await getTestHistories();
-
-	// const handleRowClick = (testHistoryId: number) => {
-	// 	router.push(`/test/results/${testHistoryId}`);
-	// };
 
 	return (
 		<>
@@ -39,7 +31,7 @@ export default async function Test() {
 				>
 					テスト履歴
 				</Typography>
-				<TableContainer component={Paper}>
+				<TableContainer component={Paper} sx={{ maxWidth: '700px', margin: '0 auto' }}>
 					<Table>
 						<TableHead>
 							<TableRow>
