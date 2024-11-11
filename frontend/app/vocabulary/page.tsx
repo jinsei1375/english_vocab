@@ -12,6 +12,8 @@ import WordDeleteConfirmDialog from '@/components/WordDeleteConfirmDialog';
 import SortSelect from '@/components/SortSelect';
 import FileterSelect from '@/components/FilterSelect';
 import SearchInput from '@/components/SearchInput';
+import { updateMemorizedStatus } from '@/utils/vocabulary';
+import { showFlashMessage } from '@/utils/flashMessage';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -129,7 +131,7 @@ export default function Vocabulary() {
 
 			// フラッシュメッセージを表示
 			const message = isEdit ? '単語が更新されました' : '単語が追加されました';
-			setFlashMessage(message);
+			showFlashMessage(message, setFlashMessage);
 		} catch {
 			throw new Error('Failed to add vocabulary');
 		}
@@ -147,18 +149,7 @@ export default function Vocabulary() {
 	// 覚えたボタンをクリック
 	const handleMemorizedClick = async (word: WordType) => {
 		try {
-			const response = await fetch(`${apiUrl}/api/vocabularies/${word.id}/memorized`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ memorized: !word.memorized }),
-			});
-			if (!response.ok) {
-				throw new Error('Failed to update memorized status');
-			}
-			const updatedWord = await response.json();
-
+			const updatedWord = await updateMemorizedStatus(word);
 			// 更新された単語をローカルの状態に反映
 			const updatedVocabularies = vocabularies.map((vocabulary) =>
 				vocabulary.id === updatedWord.id ? updatedWord : vocabulary
@@ -192,7 +183,7 @@ export default function Vocabulary() {
 			);
 
 			// フラッシュメッセージを表示
-			setFlashMessage('削除しました。');
+			showFlashMessage('単語が削除されました', setFlashMessage);
 			handleCloseModal();
 		} catch {
 			throw new Error('Failed to update memorized status');

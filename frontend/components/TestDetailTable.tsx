@@ -14,6 +14,8 @@ import {
 import WordModal from './WordModal/WordModal';
 import { useEffect, useState } from 'react';
 import { WordType } from '@/types';
+import { updateMemorizedStatus } from '@/utils/vocabulary';
+import { showFlashMessage } from '@/utils/flashMessage';
 
 interface TestDetailTableProps {
 	testHistory: any;
@@ -37,20 +39,12 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 		}
 	}, [testHistory]);
 
+	// 共通処理はまとめる
+
 	// 覚えたボタンをクリック
 	const handleMemorizedClick = async (word: WordType) => {
 		try {
-			const response = await fetch(`${apiUrl}/api/vocabularies/${word.id}/memorized`, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({ memorized: !word.memorized }),
-			});
-			if (!response.ok) {
-				throw new Error('Failed to update memorized status');
-			}
-			const updatedWord = await response.json();
+			const updatedWord = await updateMemorizedStatus(word);
 
 			// 更新された単語をローカルの状態に反映
 			const updatedVocabularies = vocabularies.map((vocabulary) =>
@@ -59,7 +53,7 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 			setVocabularies(updatedVocabularies);
 			setSelectedWord(updatedWord);
 			// フラッシュメッセージを表示
-			setFlashMessage('覚えたステータスが更新されました');
+			showFlashMessage('覚えたステータスを更新しました', setFlashMessage);
 		} catch {
 			throw new Error('Failed to update memorized status');
 		}
