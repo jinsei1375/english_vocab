@@ -14,6 +14,7 @@ import FileterSelect from '@/components/FilterSelect';
 import SearchInput from '@/components/SearchInput';
 import { updateMemorizedStatus } from '@/utils/vocabulary';
 import { showFlashMessage } from '@/utils/flashMessage';
+import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -135,7 +136,7 @@ export default function Vocabulary() {
 		} catch {
 			throw new Error('Failed to add vocabulary');
 		}
-		handleCloseModal();
+		handleCloseModal(setOpenForm, setModalOpen, setSelectedWord, setShowDetails, setOpenDelteConfirm);
 	};
 
 	// 検索アイコンクリック
@@ -184,30 +185,16 @@ export default function Vocabulary() {
 
 			// フラッシュメッセージを表示
 			showFlashMessage('単語が削除されました', setFlashMessage);
-			handleCloseModal();
+			handleCloseModal(
+				setOpenForm,
+				setModalOpen,
+				setSelectedWord,
+				setShowDetails,
+				setOpenDelteConfirm
+			);
 		} catch {
 			throw new Error('Failed to update memorized status');
 		}
-	};
-
-	// 単語カードをクリック
-	const handleCardClick = (word: WordType) => {
-		setSelectedWord(word);
-		setModalOpen(true);
-	};
-
-	// 編集するボタンクリック
-	const handleEditClick = () => {
-		setOpenForm(true);
-	};
-
-	// モーダルを閉じる
-	const handleCloseModal = () => {
-		setOpenForm(false);
-		setModalOpen(false);
-		setSelectedWord(null);
-		setShowDetails(false);
-		setOpenDelteConfirm(false);
 	};
 
 	return (
@@ -258,21 +245,42 @@ export default function Vocabulary() {
 					<CircularProgress />
 				</Box>
 			) : (
-				<WordCardList words={vocabularies} handleClick={handleCardClick} />
+				<WordCardList
+					words={vocabularies}
+					handleClick={handleWordClick}
+					setselectedWord={setSelectedWord}
+					setModalOpen={setModalOpen}
+				/>
 			)}
 			<WordFormDialog
 				open={openForm}
-				onClose={handleCloseModal}
+				onClose={() =>
+					handleCloseModal(
+						setOpenForm,
+						setModalOpen,
+						setSelectedWord,
+						setShowDetails,
+						setOpenDelteConfirm
+					)
+				}
 				onAddWord={handleAddOrEditWord}
 				initialWord={selectedWord}
 			/>
 			<WordModal
 				open={modalOpen}
-				onClose={handleCloseModal}
+				onClose={() =>
+					handleCloseModal(
+						setOpenForm,
+						setModalOpen,
+						setSelectedWord,
+						setShowDetails,
+						setOpenDelteConfirm
+					)
+				}
 				word={selectedWord}
 				setSelectedWord={setSelectedWord}
 				handleMemorizedClick={handleMemorizedClick}
-				handleEditClick={handleEditClick}
+				handleEditClick={() => handleEditClick(setOpenForm)}
 				showDetails={showDetails}
 				setShowDetails={setShowDetails}
 				setOpenDelteConfirm={setOpenDelteConfirm}

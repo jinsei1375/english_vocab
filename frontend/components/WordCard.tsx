@@ -5,18 +5,21 @@ import CheckIcon from '@mui/icons-material/Check';
 
 interface WordCardProps {
 	word: WordType;
-	handleClick: (word: WordType) => void;
+	handleClick: (
+		word: WordType | null,
+		setSelectedWord: Dispatch<SetStateAction<WordType | null>>,
+		setModalOpen: Dispatch<SetStateAction<boolean>>
+	) => void;
+	setSelectedWord: Dispatch<SetStateAction<WordType | null>>;
+	setModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const Word: React.FC<WordCardProps> = ({ word, handleClick }) => {
-	const handleCardClick = () => {
-		handleClick(word);
-	};
+const Word: React.FC<WordCardProps> = ({ word, handleClick, setSelectedWord, setModalOpen }) => {
 	return (
 		<Box
 			key={word.id}
 			sx={{ width: '100%', margin: '0', cursor: 'pointer' }}
-			onClick={handleCardClick}
+			onClick={() => handleClick(word, setSelectedWord, setModalOpen)}
 		>
 			<Card sx={{ margin: '0', backgroundColor: 'white', color: '#333' }}>
 				<CardContent sx={{ paddingBottom: '16px !important' }}>

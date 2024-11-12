@@ -1,15 +1,27 @@
 import React from 'react';
 import { Box } from '@mui/material';
 import { WordType } from '@/types';
+import { Dispatch, SetStateAction } from 'react';
 
 import WordCard from './WordCard';
 
 interface WordCardListProps {
 	words: WordType[];
-	handleClick: (word: WordType) => void;
+	handleClick: (
+		word: WordType | null,
+		setSelectedWord: Dispatch<SetStateAction<WordType | null>>,
+		setModalOpen: Dispatch<SetStateAction<boolean>>
+	) => void;
+	setSelectedWord: Dispatch<SetStateAction<WordType | null>>;
+	setModalOpen: Dispatch<SetStateAction<boolean>>;
 }
 
-const WordList: React.FC<WordCardListProps> = ({ words, handleClick }) => {
+const WordList: React.FC<WordCardListProps> = ({
+	words,
+	handleClick,
+	setSelectedWord,
+	setModalOpen,
+}) => {
 	return (
 		<Box
 			sx={{
@@ -26,7 +38,11 @@ const WordList: React.FC<WordCardListProps> = ({ words, handleClick }) => {
 			}}
 		>
 			{words.map((word) => (
-				<WordCard key={word.id} word={word} handleClick={handleClick}></WordCard>
+				<WordCard
+					key={word.id}
+					word={word}
+					handleClick={() => handleClick(word, setSelectedWord, setModalOpen)}
+				></WordCard>
 			))}
 		</Box>
 	);

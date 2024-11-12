@@ -16,6 +16,7 @@ import { useEffect, useState } from 'react';
 import { WordType } from '@/types';
 import { updateMemorizedStatus } from '@/utils/vocabulary';
 import { showFlashMessage } from '@/utils/flashMessage';
+import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 
 interface TestDetailTableProps {
 	testHistory: any;
@@ -39,7 +40,7 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 		}
 	}, [testHistory]);
 
-	// 共通処理はまとめる
+	// 共通処理はまとめる1
 
 	// 覚えたボタンをクリック
 	const handleMemorizedClick = async (word: WordType) => {
@@ -57,26 +58,6 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 		} catch {
 			throw new Error('Failed to update memorized status');
 		}
-	};
-
-	// 詳細をクリック
-	const handleClick = (word: WordType) => {
-		setSelectedWord(word);
-		setModalOpen(true);
-	};
-
-	// 編集するボタンクリック
-	const handleEditClick = () => {
-		setOpenForm(true);
-	};
-
-	// モーダルを閉じる
-	const handleCloseModal = () => {
-		setOpenForm(false);
-		setModalOpen(false);
-		setSelectedWord(null);
-		setShowDetails(false);
-		setOpenDelteConfirm(false);
 	};
 
 	return (
@@ -103,7 +84,7 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 										color="primary"
 										sx={{ height: '40px' }}
 										component="a"
-										onClick={() => handleClick(result.vocabulary)}
+										onClick={() => handleWordClick(result.vocabulary, setSelectedWord, setModalOpen)}
 									>
 										詳細
 									</Button>
@@ -115,11 +96,19 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 			</TableContainer>
 			<WordModal
 				open={modalOpen}
-				onClose={handleCloseModal}
+				onClose={() =>
+					handleCloseModal(
+						setOpenForm,
+						setModalOpen,
+						setSelectedWord,
+						setShowDetails,
+						setOpenDelteConfirm
+					)
+				}
 				word={selectedWord}
 				setSelectedWord={setSelectedWord}
 				handleMemorizedClick={handleMemorizedClick}
-				handleEditClick={handleEditClick}
+				handleEditClick={() => handleEditClick(setOpenForm)}
 				showDetails={showDetails}
 				setShowDetails={setShowDetails}
 				setOpenDelteConfirm={setOpenDelteConfirm}
