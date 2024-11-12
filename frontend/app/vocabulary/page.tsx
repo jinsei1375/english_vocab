@@ -248,7 +248,7 @@ export default function Vocabulary() {
 				<WordCardList
 					words={vocabularies}
 					handleClick={handleWordClick}
-					setselectedWord={setSelectedWord}
+					setSelectedWord={setSelectedWord}
 					setModalOpen={setModalOpen}
 				/>
 			)}
