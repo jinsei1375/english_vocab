@@ -12,7 +12,6 @@ import WordDeleteConfirmDialog from '@/components/WordDeleteConfirmDialog';
 import SortSelect from '@/components/SortSelect';
 import FileterSelect from '@/components/FilterSelect';
 import SearchInput from '@/components/SearchInput';
-import { updateMemorizedStatus } from '@/utils/vocabulary';
 import { showFlashMessage } from '@/utils/flashMessage';
 import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 
@@ -148,21 +147,21 @@ export default function Vocabulary() {
 	};
 
 	// 覚えたボタンをクリック
-	const handleMemorizedClick = async (word: WordType) => {
-		try {
-			const updatedWord = await updateMemorizedStatus(word);
-			// 更新された単語をローカルの状態に反映
-			const updatedVocabularies = vocabularies.map((vocabulary) =>
-				vocabulary.id === updatedWord.id ? updatedWord : vocabulary
-			);
-			setVocabularies(updatedVocabularies);
-			setSelectedWord(updatedWord);
-			// フラッシュメッセージを表示
-			setFlashMessage('覚えたステータスが更新されました');
-		} catch {
-			throw new Error('Failed to update memorized status');
-		}
-	};
+	// const handleMemorizedClick = async (word: WordType) => {
+	// 	try {
+	// 		const updatedWord = await updateMemorizedStatus(word);
+	// 		// 更新された単語をローカルの状態に反映
+	// 		const updatedVocabularies = vocabularies.map((vocabulary) =>
+	// 			vocabulary.id === updatedWord.id ? updatedWord : vocabulary
+	// 		);
+	// 		setVocabularies(updatedVocabularies);
+	// 		setSelectedWord(updatedWord);
+	// 		// フラッシュメッセージを表示
+	// 		setFlashMessage('覚えたステータスが更新されました');
+	// 	} catch {
+	// 		throw new Error('Failed to update memorized status');
+	// 	}
+	// };
 
 	// 単語削除
 	const handleDeleteWord = async (wordId: number | undefined) => {
@@ -279,12 +278,14 @@ export default function Vocabulary() {
 				}
 				word={selectedWord}
 				setSelectedWord={setSelectedWord}
-				handleMemorizedClick={handleMemorizedClick}
+				// handleMemorizedClick={handleMemorizedClick}
 				handleEditClick={() => handleEditClick(setOpenForm)}
 				showDetails={showDetails}
 				setShowDetails={setShowDetails}
 				setOpenDelteConfirm={setOpenDelteConfirm}
 				vocabularies={vocabularies}
+				setVocabularies={setVocabularies}
+				setFlashMessage={setFlashMessage}
 			/>
 			<WordDeleteConfirmDialog
 				open={openDeleteConfirm}

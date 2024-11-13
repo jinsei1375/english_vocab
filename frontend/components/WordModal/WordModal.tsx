@@ -18,18 +18,21 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation } from 'swiper/modules';
 import { formatDate } from '@/utils/formatDate';
+import { handleMemorizedClick } from '@/utils/vocabulary';
 
 interface WordModalProps {
 	open: boolean;
 	onClose: () => void;
 	word: WordType | null;
 	setSelectedWord: React.Dispatch<React.SetStateAction<WordType | null>>;
-	handleMemorizedClick: (word: WordType) => void;
+	// handleMemorizedClick: (word: WordType) => void;
 	handleEditClick: () => void;
 	showDetails: boolean;
 	setShowDetails: React.Dispatch<React.SetStateAction<boolean>>;
 	setOpenDelteConfirm: React.Dispatch<React.SetStateAction<boolean>>;
 	vocabularies: WordType[];
+	setVocabularies: React.Dispatch<React.SetStateAction<WordType[]>>;
+	setFlashMessage: React.Dispatch<React.SetStateAction<string | null>>;
 	isTestMode?: boolean;
 	handleTestAnswer?: (isCorrect: boolean) => void;
 }
@@ -39,12 +42,14 @@ const WordModal: React.FC<WordModalProps> = ({
 	onClose,
 	word,
 	setSelectedWord,
-	handleMemorizedClick,
+	// handleMemorizedClick,
 	handleEditClick,
 	showDetails,
 	setShowDetails,
 	setOpenDelteConfirm,
 	vocabularies,
+	setVocabularies,
+	setFlashMessage,
 	isTestMode,
 	handleTestAnswer,
 }) => {
@@ -54,9 +59,9 @@ const WordModal: React.FC<WordModalProps> = ({
 		onClose();
 	};
 
-	const handleUpdateMemorized = (word: WordType) => {
-		handleMemorizedClick(word);
-	};
+	// const handleUpdateMemorized = (word: WordType) => {
+	// 	handleMemorizedClick(word);
+	// };
 
 	if (!word) return null;
 	const initialSlideIndex = vocabularies.findIndex((v) => v.id === word.id);
@@ -170,7 +175,18 @@ const WordModal: React.FC<WordModalProps> = ({
 														<Button color="error" onClick={() => setOpenDelteConfirm(true)}>
 															削除する
 														</Button>
-														<Button color="primary" onClick={() => handleUpdateMemorized(word)}>
+														<Button
+															color="primary"
+															onClick={() =>
+																handleMemorizedClick(
+																	word,
+																	vocabularies,
+																	setVocabularies,
+																	setSelectedWord,
+																	setFlashMessage
+																)
+															}
+														>
 															{word.memorized ? 'チェック外す' : '覚えた'}
 														</Button>
 														<Button color="primary" onClick={handleEditClick}>
