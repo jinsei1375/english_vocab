@@ -14,8 +14,6 @@ import {
 import WordModal from './WordModal/WordModal';
 import { useEffect, useState } from 'react';
 import { WordType } from '@/types';
-import { updateMemorizedStatus } from '@/utils/vocabulary';
-import { showFlashMessage } from '@/utils/flashMessage';
 import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 
 interface TestDetailTableProps {
@@ -39,26 +37,6 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 			setVocabularies(vocabularies);
 		}
 	}, [testHistory]);
-
-	// 共通処理はまとめる1
-
-	// 覚えたボタンをクリック
-	const handleMemorizedClick = async (word: WordType) => {
-		try {
-			const updatedWord = await updateMemorizedStatus(word);
-
-			// 更新された単語をローカルの状態に反映
-			const updatedVocabularies = vocabularies.map((vocabulary) =>
-				vocabulary.id === updatedWord.id ? updatedWord : vocabulary
-			);
-			setVocabularies(updatedVocabularies);
-			setSelectedWord(updatedWord);
-			// フラッシュメッセージを表示
-			showFlashMessage('覚えたステータスを更新しました', setFlashMessage);
-		} catch {
-			throw new Error('Failed to update memorized status');
-		}
-	};
 
 	return (
 		<>
@@ -107,11 +85,12 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 				}
 				word={selectedWord}
 				setSelectedWord={setSelectedWord}
-				handleMemorizedClick={handleMemorizedClick}
 				handleEditClick={() => handleEditClick(setOpenForm)}
 				showDetails={showDetails}
 				setShowDetails={setShowDetails}
 				setOpenDelteConfirm={setOpenDelteConfirm}
+				setVocabularies={setVocabularies}
+				setFlashMessage={setFlashMessage}
 				vocabularies={vocabularies}
 			/>
 			<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>

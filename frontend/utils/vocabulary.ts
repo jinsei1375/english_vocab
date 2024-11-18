@@ -1,6 +1,7 @@
 import { updateMemorizedStatus } from '@/app/api/vocabulary/route';
 import { WordType } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
+import { showFlashMessage } from './flashMessage';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -20,8 +21,9 @@ export const handleMemorizedClick = async (
 		);
 		setVocabularies(updatedVocabularies);
 		setSelectedWord(updatedWord);
+
 		// フラッシュメッセージを表示
-		setFlashMessage('覚えたステータスが更新されました');
+		showFlashMessage('覚えたステータスが更新されました', setFlashMessage);
 	} catch {
 		throw new Error('Failed to update memorized status');
 	}

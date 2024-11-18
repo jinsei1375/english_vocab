@@ -3,6 +3,7 @@ import { ReportItem } from '@/components/ReportItem';
 import { Box } from '@mui/material';
 import { fetchReportData } from '../api/report/route';
 import { formatDate } from '@/utils/formatDate';
+import LinkButton from '@/components/LinkButton';
 
 export default async function Report() {
 	const { registrationDate, registeredWords, learnedWords, notLearnedWords, testHistoryCount } =
@@ -16,6 +17,7 @@ export default async function Report() {
 				<ReportItem title={'覚えた単語数'} description={learnedWords} />
 				<ReportItem title={'覚えていない単語数'} description={notLearnedWords} />
 				<ReportItem title={'テスト実施回数'} description={testHistoryCount} />
+				<LinkButton label="テスト履歴" href="/test" />
 			</Box>
 		</>
 	);

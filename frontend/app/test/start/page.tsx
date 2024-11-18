@@ -4,7 +4,7 @@ import PageTitle from '@/components/PageTitle';
 import WordModal from '@/components/WordModal/WordModal';
 import { WordType } from '@/types';
 import { getUserId } from '@/utils/auth';
-import { Box, Typography } from '@mui/material';
+import { Alert, Box, Snackbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -15,6 +15,7 @@ export default function Start() {
 	const [results, setResults] = useState<{ wordId: number; isCorrect: boolean }[]>([]);
 	const [modalOpen, setModalOpen] = useState(true);
 	const [showDetails, setShowDetails] = useState(false);
+	const [flashMessage, setFlashMessage] = useState<string | null>(null);
 
 	// テスト用の単語を取得
 	useEffect(() => {
@@ -92,18 +93,25 @@ export default function Start() {
 						onClose={() => {}}
 						word={testWords[currentIndex]}
 						setSelectedWord={() => {}}
-						handleMemorizedClick={() => {}}
 						handleEditClick={() => {}}
 						showDetails={showDetails}
 						setShowDetails={setShowDetails}
 						setOpenDelteConfirm={() => {}}
 						vocabularies={testWords}
+						setVocabularies={setTestWords}
+						setFlashMessage={setFlashMessage}
 						isTestMode={true}
 						handleTestAnswer={handleTestAnswer}
 					/>
+					<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
+						<Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>
+							{flashMessage}
+						</Alert>
+					</Snackbar>
 				</>
 			) : (
 				<Box>
+					{/* レイアウト調整 */}
 					<PageTitle title="テスト結果" />
 					{results.map((result, index) => (
 						<Typography key={index} variant="body1">
