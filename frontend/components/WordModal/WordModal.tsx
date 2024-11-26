@@ -59,10 +59,6 @@ const WordModal: React.FC<WordModalProps> = ({
 		onClose();
 	};
 
-	// const handleUpdateMemorized = (word: WordType) => {
-	// 	handleMemorizedClick(word);
-	// };
-
 	if (!word) return null;
 	const initialSlideIndex = vocabularies.findIndex((v) => v.id === word.id);
 

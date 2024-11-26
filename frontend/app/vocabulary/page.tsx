@@ -100,7 +100,8 @@ export default function Vocabulary() {
 		return vocabularies.filter((word) => word.word.toLowerCase().includes(query.toLowerCase()));
 	};
 
-	// 新しい単語を追加→編集時の処理
+	// 新しい単語を追加or編集時の処理
+	// 共通化
 	const handleAddOrEditWord = async (newWord: WordType) => {
 		try {
 			const userId = await getUserId();
@@ -145,23 +146,6 @@ export default function Vocabulary() {
 			setSearchQuery('');
 		}
 	};
-
-	// 覚えたボタンをクリック
-	// const handleMemorizedClick = async (word: WordType) => {
-	// 	try {
-	// 		const updatedWord = await updateMemorizedStatus(word);
-	// 		// 更新された単語をローカルの状態に反映
-	// 		const updatedVocabularies = vocabularies.map((vocabulary) =>
-	// 			vocabulary.id === updatedWord.id ? updatedWord : vocabulary
-	// 		);
-	// 		setVocabularies(updatedVocabularies);
-	// 		setSelectedWord(updatedWord);
-	// 		// フラッシュメッセージを表示
-	// 		setFlashMessage('覚えたステータスが更新されました');
-	// 	} catch {
-	// 		throw new Error('Failed to update memorized status');
-	// 	}
-	// };
 
 	// 単語削除
 	const handleDeleteWord = async (wordId: number | undefined) => {
@@ -278,7 +262,6 @@ export default function Vocabulary() {
 				}
 				word={selectedWord}
 				setSelectedWord={setSelectedWord}
-				// handleMemorizedClick={handleMemorizedClick}
 				handleEditClick={() => handleEditClick(setOpenForm)}
 				showDetails={showDetails}
 				setShowDetails={setShowDetails}

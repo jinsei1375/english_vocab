@@ -15,6 +15,9 @@ import WordModal from './WordModal/WordModal';
 import { useEffect, useState } from 'react';
 import { WordType } from '@/types';
 import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
+import WordFormDialog from './WordFormDialog';
+import { getUserId } from '@/utils/auth';
+import { showFlashMessage } from '@/utils/flashMessage';
 
 interface TestDetailTableProps {
 	testHistory: any;
@@ -37,6 +40,44 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 			setVocabularies(vocabularies);
 		}
 	}, [testHistory]);
+
+	// 新しい単語を追加→編集時の処理
+	const handleAddOrEditWord = async (newWord: WordType) => {
+		try {
+			const userId = await getUserId();
+			const isEdit = newWord.id ? true : false;
+			const url = isEdit ? `${apiUrl}/api/vocabularies/${newWord.id}` : `${apiUrl}/api/vocabularies`;
+			const method = isEdit ? 'PUT' : 'POST';
+			const response = await fetch(url, {
+				method: method,
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({ ...newWord, userId }),
+			});
+			if (!response.ok) {
+				throw new Error('Failed to add vocabulary');
+			}
+			const addedOrUpdateWord = await response.json();
+
+			if (isEdit) {
+				setVocabularies(
+					vocabularies.map((vocabulary) =>
+						vocabulary.id === addedOrUpdateWord.id ? addedOrUpdateWord : vocabulary
+					)
+				);
+			} else {
+				setVocabularies([addedOrUpdateWord, ...vocabularies]);
+			}
+
+			// フラッシュメッセージを表示
+			const message = isEdit ? '単語が更新されました' : '単語が追加されました';
+			showFlashMessage(message, setFlashMessage);
+		} catch {
+			throw new Error('Failed to add vocabulary');
+		}
+		handleCloseModal(setOpenForm, setModalOpen, setSelectedWord, setShowDetails, setOpenDelteConfirm);
+	};
 
 	return (
 		<>
@@ -92,6 +133,20 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 				setVocabularies={setVocabularies}
 				setFlashMessage={setFlashMessage}
 				vocabularies={vocabularies}
+			/>
+			<WordFormDialog
+				open={openForm}
+				onClose={() =>
+					handleCloseModal(
+						setOpenForm,
+						setModalOpen,
+						setSelectedWord,
+						setShowDetails,
+						setOpenDelteConfirm
+					)
+				}
+				onAddWord={handleAddOrEditWord}
+				initialWord={selectedWord}
 			/>
 			<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
 				<Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>
