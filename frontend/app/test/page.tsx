@@ -1,5 +1,6 @@
 import LinkButton from '@/components/LinkButton';
 import PageTitle from '@/components/PageTitle';
+import TestStartModal from '@/components/TestStartModal';
 import {
 	Box,
 	Paper,
@@ -20,7 +21,7 @@ export default async function Test() {
 	return (
 		<>
 			<PageTitle title="テスト" />
-			<LinkButton label="テスト開始する" href="/test/start" />
+			<TestStartModal />
 			<Box>
 				<Typography
 					variant="h4"
