@@ -22,11 +22,15 @@ export default function Start() {
 		const fetchWords = async () => {
 			try {
 				const userId = await getUserId();
+				// パラメータのonlyUnmemorizedの値を取得
+				const onlyUnmemorized = new URLSearchParams(window.location.search).get('onlyUnmemorized');
+				console.log('onlyUnmemorized:', onlyUnmemorized);
 				const response = await fetch(`${apiUrl}/api/users/${userId}/vocabularies/test/`, {
 					method: 'GET',
 					headers: {
 						'Content-Type': 'application/json',
 					},
+					body: JSON.stringify({ onlyUnmemorized }),
 				});
 				if (!response.ok) {
 					throw new Error('Failed to fetch words');

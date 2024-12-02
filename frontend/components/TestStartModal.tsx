@@ -42,7 +42,7 @@ const TestStartModal: React.FC = () => {
 					{onlyUnmemorized ? (
 						<LinkButton label="開始" href="/test/start?onlyUnmemorized=true" />
 					) : (
-						<LinkButton label="開始" href="/test/start" />
+						<LinkButton label="開始" href="/test/start?onlyUnmemorized=false" />
 					)}
 				</DialogActions>
 			</Dialog>

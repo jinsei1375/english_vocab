@@ -67,8 +67,16 @@ router.get('/:userId/vocabularies', async (req, res) => {
 router.get('/:userId/vocabularies/test/', async (req, res) => {
 	try {
 		const userId = parseInt(req.params.userId, 10);
+		const onlyUnmemorized = req.body.onlyUnmemorized === 'true';
+		const whereCondition: any = {
+			userId,
+			deletedAt: null,
+		};
+		if (onlyUnmemorized) {
+			whereCondition.memorized = false;
+		}
 		const vocabularies = await prisma.vocabulary.findMany({
-			where: { userId: userId as number, deletedAt: null },
+			where: whereCondition,
 			orderBy: { createdAt: 'desc' },
 		});
 
