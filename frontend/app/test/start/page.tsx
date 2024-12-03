@@ -25,19 +25,22 @@ export default function Start() {
 				// パラメータのonlyUnmemorizedの値を取得
 				const onlyUnmemorized = new URLSearchParams(window.location.search).get('onlyUnmemorized');
 				console.log('onlyUnmemorized:', onlyUnmemorized);
-				const response = await fetch(`${apiUrl}/api/users/${userId}/vocabularies/test/`, {
-					method: 'GET',
-					headers: {
-						'Content-Type': 'application/json',
-					},
-					body: JSON.stringify({ onlyUnmemorized }),
-				});
+				const response = await fetch(
+					`${apiUrl}/api/users/${userId}/vocabularies/test/?onlyUnmemorized=${onlyUnmemorized}`,
+					{
+						method: 'GET',
+						headers: {
+							'Content-Type': 'application/json',
+						},
+					}
+				);
 				if (!response.ok) {
 					throw new Error('Failed to fetch words');
 				}
 				const words: WordType[] = await response.json();
 				setTestWords(words);
-			} catch {
+			} catch (e) {
+				console.log(e);
 				throw new Error('Failed to fetch words');
 			}
 		};

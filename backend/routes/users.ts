@@ -67,11 +67,13 @@ router.get('/:userId/vocabularies', async (req, res) => {
 router.get('/:userId/vocabularies/test/', async (req, res) => {
 	try {
 		const userId = parseInt(req.params.userId, 10);
-		const onlyUnmemorized = req.body.onlyUnmemorized === 'true';
+		//クエリパラエータのonlyUnmemorizedの値を取得
+		const onlyUnmemorized = req.query.onlyUnmemorized === 'true';
 		const whereCondition: any = {
 			userId,
 			deletedAt: null,
 		};
+		console.log('onlyUnmemorized:', onlyUnmemorized);
 		if (onlyUnmemorized) {
 			whereCondition.memorized = false;
 		}
