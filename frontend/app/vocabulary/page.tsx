@@ -4,7 +4,7 @@ import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import { Alert, Box, CircularProgress, Snackbar } from '@mui/material';
+import { Alert, Box, CircularProgress, Snackbar, Pagination } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
 import WordFormDialog from '@/components/WordFormDialog';
@@ -31,6 +31,10 @@ export default function Vocabulary() {
 	const [filterOption, setFilterOption] = useState('all');
 	const [searchQuery, setSearchQuery] = useState('');
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
+	const [currentPage, setCurrentPage] = useState(1);
+	const [totalPages, setTotalPages] = useState(1);
+
+	const itemsPerPage = 10;
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -58,6 +62,7 @@ export default function Vocabulary() {
 				vocabularies = searchVocabularies(vocabularies, searchQuery);
 
 				setVocabularies(vocabularies);
+				setTotalPages(Math.ceil(vocabularies.length / itemsPerPage));
 			} catch {
 				throw new Error('Failed to fetch vocabularies');
 			} finally {
@@ -66,6 +71,17 @@ export default function Vocabulary() {
 		};
 		fetchVocabularies();
 	}, [sortOption, filterOption, searchQuery]);
+
+	// ページ変更時の処理
+	const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+		setCurrentPage(value);
+	};
+
+	// 現在のページに表示する単語を取得
+	const currentVocabularies = vocabularies.slice(
+		(currentPage - 1) * itemsPerPage,
+		currentPage * itemsPerPage
+	);
 
 	// 並び替え処理
 	const sortVocabularies = (vocabularies: WordType[], option: string) => {
@@ -196,12 +212,22 @@ export default function Vocabulary() {
 					<CircularProgress />
 				</Box>
 			) : (
-				<WordCardList
-					words={vocabularies}
-					handleClick={handleWordClick}
-					setSelectedWord={setSelectedWord}
-					setModalOpen={setModalOpen}
-				/>
+				<Box>
+					<WordCardList
+						words={currentVocabularies}
+						handleClick={handleWordClick}
+						setSelectedWord={setSelectedWord}
+						setModalOpen={setModalOpen}
+					/>
+					<Box sx={{ display: 'flex', justifyContent: 'center', marginTop: 2 }}>
+						<Pagination
+							count={totalPages}
+							page={currentPage}
+							onChange={handlePageChange}
+							color="primary"
+						/>
+					</Box>
+				</Box>
 			)}
 			<WordFormDialog
 				open={openForm}
