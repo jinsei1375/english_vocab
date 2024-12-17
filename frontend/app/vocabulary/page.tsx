@@ -4,7 +4,7 @@ import WordCardList from '@/components/WordCardList';
 import PageTitle from '@/components/PageTitle';
 import AddButton from '@/components/AddButton';
 import { WordType } from '@/types';
-import { Alert, Box, CircularProgress, Snackbar, Pagination } from '@mui/material';
+import { Alert, Box, CircularProgress, Snackbar, Pagination, PaginationItem } from '@mui/material';
 import { getUserId } from '@/utils/auth';
 import WordModal from '@/components/WordModal/WordModal';
 import WordFormDialog from '@/components/WordFormDialog';
@@ -34,7 +34,7 @@ export default function Vocabulary() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 
-	const itemsPerPage = 10;
+	const itemsPerPage = 5;
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -225,6 +225,23 @@ export default function Vocabulary() {
 							page={currentPage}
 							onChange={handlePageChange}
 							color="primary"
+							renderItem={(item) => (
+								<PaginationItem
+									{...item}
+									sx={{
+										backgroundColor: item.page === currentPage ? 'primary.main' : 'white',
+										color: item.page === currentPage ? 'white' : 'black',
+										'&:hover': {
+											opacity: 0.7,
+											backgroundColor: item.page === currentPage ? 'primary.main' : 'white',
+										},
+										'&.MuiPaginationItem-ellipsis': {
+											color: 'white', // 省略の点線の色を白に変更
+											backgroundColor: 'white',
+										},
+									}}
+								/>
+							)}
 						/>
 					</Box>
 				</Box>
