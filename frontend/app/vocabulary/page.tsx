@@ -15,6 +15,7 @@ import SearchInput from '@/components/SearchInput';
 import { showFlashMessage } from '@/utils/flashMessage';
 import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 import { addOrEditVocabulary } from '@/utils/vocabulary';
+import PerPageSelect from '@/components/PerPageSelect';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -33,8 +34,7 @@ export default function Vocabulary() {
 	const [isSearchOpen, setIsSearchOpen] = useState(false);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
-
-	const itemsPerPage = 5;
+	const [itemsPerPage, setItemsPerPage] = useState(10);
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
@@ -70,7 +70,7 @@ export default function Vocabulary() {
 			}
 		};
 		fetchVocabularies();
-	}, [sortOption, filterOption, searchQuery]);
+	}, [sortOption, filterOption, searchQuery, itemsPerPage]);
 
 	// ページ変更時の処理
 	const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -194,6 +194,11 @@ export default function Vocabulary() {
 						handleSearchIconClick={handleSearchIconClick}
 					/>
 					<Box sx={{ display: 'flex', gap: 2 }}>
+						<PerPageSelect
+							filterOption={itemsPerPage}
+							setFilterOption={setItemsPerPage}
+							setCurrentPage={setCurrentPage}
+						/>
 						<FileterSelect filterOption={filterOption} setFilterOption={setFilterOption} />
 						<SortSelect sortOption={sortOption} setSortOption={setSortOption} />
 					</Box>
