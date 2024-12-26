@@ -22,7 +22,7 @@ const SideNav: React.FC<SideNavProps> = ({ drawerOpen, toggleDrawer, isMdUp }) =
 			<Divider />
 			<List>
 				<SideNavLink href={'/report'} text={'記録'} toggleDrawer={toggleDrawer} />
-				<SideNavLink href={'/settings'} text={'設定'} toggleDrawer={toggleDrawer} />
+				{/* <SideNavLink href={'/settings'} text={'設定'} toggleDrawer={toggleDrawer} /> */}
 			</List>
 		</Box>
 	);
