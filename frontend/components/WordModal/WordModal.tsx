@@ -94,16 +94,16 @@ const WordModal: React.FC<WordModalProps> = ({
 				>
 					{vocabularies.map((vocabulary) => (
 						<SwiperSlide key={vocabulary.id}>
-							<DialogContent sx={{ position: 'relative', minHeight: '300px' }}>
+							<DialogContent sx={{ position: 'relative', minHeight: '300px', padding: '40px 24px' }}>
 								<Box className={`flip-card ${showDetails ? 'flipped' : ''}`} sx={{ minHeight: '300px' }}>
 									<Box className="flip-card-inner" sx={{ minHeight: '300px' }}>
-										{/* カード全面 */}
+										{/* カード前面 */}
 										<Box className="flip-card-front">
 											<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 												<Box display="flex" justifyContent="center" alignItems="center">
-													{!isTestMode && (
+													{!isTestMode && word.memorized && (
 														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-															{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
+															<CheckIcon sx={{ color: 'green' }} />
 														</Box>
 													)}
 													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
@@ -118,9 +118,11 @@ const WordModal: React.FC<WordModalProps> = ({
 										<Box className="flip-card-back">
 											<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 												<Box display="flex" justifyContent="center" alignItems="center">
-													<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-														{word.memorized && <CheckIcon sx={{ color: 'green' }} />}
-													</Box>
+													{word.memorized && (
+														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+															<CheckIcon sx={{ color: 'green' }} />
+														</Box>
+													)}
 													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 												</Box>
 											</DialogTitle>
