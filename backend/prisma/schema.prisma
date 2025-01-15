@@ -19,6 +19,7 @@ model User {
   vocabularies Vocabulary[]
   testResults TestResult[]
   testHistories TestHistory[]
+  settings UserSetting[]
 
   @@map("users")
 }
@@ -83,4 +84,17 @@ model TestHistory {
   testResults TestResult[]
 
   @@map("test_histories")
+}
+
+model UserSetting {
+  id           Int       @id @default(autoincrement()) @map("id")
+  userId       Int       @map("user_id")
+  settingKey   String    @map("setting_key")
+  settingValue String    @map("setting_value")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  updatedAt    DateTime  @updatedAt @map("updated_at")
+  deletedAt    DateTime? @map("deleted_at")
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_settings")
 }
