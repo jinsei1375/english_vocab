@@ -48,3 +48,22 @@ export async function getTestHistory(testHistoryId: number) {
 		console.error('Error fetching test history:', error);
 	}
 }
+
+export async function getUserSettings() {
+	try {
+		const userId = await getUserId();
+		const response = await fetch(`${apiUrl}/api/users/${userId}/settings`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!response.ok) {
+			throw new Error('Failed to fetch user settings');
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error fetching user settings:', error);
+	}
+}

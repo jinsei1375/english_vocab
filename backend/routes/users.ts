@@ -209,4 +209,23 @@ router.post('/:userId/testResults', async (req, res) => {
 	}
 });
 
+// ユーザー設定の取得
+router.get('/:userId/settings', async (req, res) => {
+	const userId = parseInt(req.params.userId, 10);
+	try {
+		const userSettings = await prisma.userSetting.findMany({
+			where: { userId },
+		});
+
+		if (!userSettings) {
+			return res.status(404).json({ error: 'User settings not found' });
+		}
+
+		res.status(200).json(userSettings);
+	} catch (error) {
+		console.error('Error during user settings fetching:', error);
+		res.status(500).json({ error: 'ユーザー設定の取得に失敗しました。' });
+	}
+});
+
 export default router;
