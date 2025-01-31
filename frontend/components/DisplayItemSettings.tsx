@@ -3,6 +3,7 @@
 import { getUserId } from '@/utils/auth';
 import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { border, color, height, padding, styled } from '@mui/system';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -17,6 +18,22 @@ const initialSettings = {
 	url: true,
 	memorized: true,
 };
+
+const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
+	'&.Mui-checked': {
+		backgroundColor: 'transparent',
+	},
+	'&:not(.Mui-checked)': {
+		backgroundColor: 'transparent',
+		padding: '12.5px',
+	},
+	'&:not(.Mui-checked) .MuiSvgIcon-root': {
+		border: '1px solid #ccc',
+		width: '16.5px',
+		height: '16.5px',
+		borderRadius: '2px',
+	},
+}));
 
 export default function DisplayItemsettings() {
 	const [settings, setSettings] = useState(initialSettings);
@@ -66,7 +83,7 @@ export default function DisplayItemsettings() {
 			{Object.entries(settings).map(([key, value]) => (
 				<FormControlLabel
 					key={key}
-					control={<Checkbox checked={value} onChange={handleChange} name={key} color="primary" />}
+					control={<CustomCheckbox checked={value} onChange={handleChange} name={key} color="primary" />}
 					label={key}
 				/>
 			))}
