@@ -3,7 +3,7 @@
 import { getUserId } from '@/utils/auth';
 import { Box, Button, Checkbox, FormControlLabel, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { border, color, height, padding, styled } from '@mui/system';
+import { styled } from '@mui/system';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -38,32 +38,33 @@ const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
 export default function DisplayItemsettings() {
 	const [settings, setSettings] = useState(initialSettings);
 
-	// useEffect(() => {
-	// 	// 設定をAPIから読み込む
-	// 	const fetchSettings = async () => {
-	// 		try {
-	// 			const userId = await getUserId();
-	// 			const response = await fetch(`${apiUrl}/api/users/${userId}/settings`, {
-	// 				method: 'GET',
-	// 				headers: {
-	// 					'Content-Type': 'application/json',
-	// 				},
-	// 			});
-	// 			if (!response.ok) {
-	// 				throw new Error('Failed to fetch settings');
-	// 			}
-	// 			const data = await response.json();
-	// 			if (data) {
-	// 				setSettings(data);
-	// 			} else {
-	// 				setSettings(initialSettings);
-	// 			}
-	// 		} catch (error) {
-	// 			console.error('設定の取得に失敗しました', error);
-	// 		}
-	// 	};
-	// 	fetchSettings();
-	// }, []);
+	useEffect(() => {
+		// 設定をAPIから読み込む
+		const fetchSettings = async () => {
+			try {
+				const userId = await getUserId();
+				const response = await fetch(`${apiUrl}/api/users/${userId}/settings/display`, {
+					method: 'GET',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+				});
+				if (!response.ok) {
+					throw new Error('Failed to fetch settings');
+				}
+				const data = await response.json();
+				console.log(data);
+				if (data && data.length > 0) {
+					setSettings(data);
+				} else {
+					setSettings(initialSettings);
+				}
+			} catch (error) {
+				console.error('設定の取得に失敗しました', error);
+			}
+		};
+		fetchSettings();
+	}, []);
 
 	// 設定の変更
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -73,7 +74,29 @@ export default function DisplayItemsettings() {
 		});
 	};
 
-	const handleSave = async () => {};
+	const handleSave = async () => {
+		try {
+			const userId = await getUserId();
+			console.log(settings);
+			const response = await fetch(`${apiUrl}/api/users/${userId}/settings/display`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(settings),
+			});
+			if (!response.ok) {
+				throw new Error('Failed to save settings');
+			}
+			const data = await response.json();
+			console.log(data);
+			if (data) {
+				setSettings(data);
+			}
+		} catch (error) {
+			console.error('設定の保存に失敗しました', error);
+		}
+	};
 
 	return (
 		<Box sx={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>

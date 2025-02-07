@@ -209,22 +209,68 @@ router.post('/:userId/testResults', async (req, res) => {
 	}
 });
 
-// ユーザー設定の取得
-router.get('/:userId/settings', async (req, res) => {
+// 表示設定の取得
+router.get('/:userId/settings/display', async (req, res) => {
 	const userId = parseInt(req.params.userId, 10);
 	try {
 		const userSettings = await prisma.userSetting.findMany({
-			where: { userId },
+			where: {
+				userId,
+				deletedAt: null,
+			},
 		});
-
 		if (!userSettings) {
+			console.error('User settings not found');
 			return res.status(404).json({ error: 'User settings not found' });
 		}
 
-		res.status(200).json(userSettings);
+		const formattedSettings = userSettings.reduce((acc, setting) => {
+			acc[setting.settingKey] = setting.settingValue === 'true';
+			return acc;
+		}, {} as Record<string, boolean>);
+
+		res.status(200).json(formattedSettings);
 	} catch (error) {
 		console.error('Error during user settings fetching:', error);
 		res.status(500).json({ error: 'ユーザー設定の取得に失敗しました。' });
+	}
+});
+
+// 表示設定の保存
+router.put('/:userId/settings/display', async (req, res) => {
+	const userId = parseInt(req.params.userId, 10);
+	const settings: Record<string, boolean> = req.body;
+	try {
+		const userSettings = await Promise.all(
+			Object.keys(settings).map(async (key) => {
+				return prisma.userSetting.upsert({
+					where: {
+						userId_settingKey: {
+							userId,
+							settingKey: key,
+						},
+					},
+					update: {
+						settingValue: String(settings[key]),
+						deletedAt: null as any,
+					},
+					create: {
+						userId,
+						settingKey: key,
+						settingValue: String(settings[key]),
+					},
+				});
+			})
+		);
+
+		const formattedSettings = userSettings.reduce((acc, setting) => {
+			acc[setting.settingKey] = setting.settingValue === 'true';
+			return acc;
+		}, {} as Record<string, boolean>);
+		res.status(200).json(formattedSettings);
+	} catch (error) {
+		console.error('Error during user settings saving:', error);
+		res.status(500).json({ error: 'ユーザー設定の保存に失敗しました。' });
 	}
 });
 

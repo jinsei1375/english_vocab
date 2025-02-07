@@ -96,5 +96,6 @@ model UserSetting {
   deletedAt    DateTime? @map("deleted_at")
   user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@unique([userId, settingKey])
   @@map("user_settings")
 }
