@@ -228,7 +228,7 @@ router.get('/:userId/settings/display', async (req, res) => {
 			acc[setting.settingKey] = setting.settingValue === 'true';
 			return acc;
 		}, {} as Record<string, boolean>);
-
+		console.log('formattedSettings', formattedSettings);
 		res.status(200).json(formattedSettings);
 	} catch (error) {
 		console.error('Error during user settings fetching:', error);
@@ -240,28 +240,67 @@ router.get('/:userId/settings/display', async (req, res) => {
 router.put('/:userId/settings/display', async (req, res) => {
 	const userId = parseInt(req.params.userId, 10);
 	const settings: Record<string, boolean> = req.body;
+	console.log('settings', settings);
 	try {
-		const userSettings = await Promise.all(
-			Object.keys(settings).map(async (key) => {
-				return prisma.userSetting.upsert({
+		// Promise.allだとうまくいかなかった
+		// const userSettings = await Promise.all(
+		// 	Object.keys(settings).map(async (key) => {
+		// 		return prisma.userSetting.upsert({
+		// 			where: {
+		// 				userId_settingKey: {
+		// 					userId,
+		// 					settingKey: key,
+		// 				},
+		// 			},
+		// 			update: {
+		// 				settingValue: String(settings[key]),
+		// 				deletedAt: null,
+		// 			},
+		// 			create: {
+		// 				userId,
+		// 				settingKey: key,
+		// 				settingValue: String(settings[key]),
+		// 			},
+		// 		});
+		// 	})
+		// );
+
+		const userSettings = [];
+		for (const key of Object.keys(settings)) {
+			const existingSetting = await prisma.userSetting.findUnique({
+				where: {
+					userId_settingKey: {
+						userId,
+						settingKey: key,
+					},
+				},
+			});
+
+			let savedSetting;
+			if (existingSetting) {
+				savedSetting = await prisma.userSetting.update({
 					where: {
 						userId_settingKey: {
 							userId,
 							settingKey: key,
 						},
 					},
-					update: {
+					data: {
 						settingValue: String(settings[key]),
-						deletedAt: null as any,
+						deletedAt: null,
 					},
-					create: {
+				});
+			} else {
+				savedSetting = await prisma.userSetting.create({
+					data: {
 						userId,
 						settingKey: key,
 						settingValue: String(settings[key]),
 					},
 				});
-			})
-		);
+			}
+			userSettings.push(savedSetting);
+		}
 
 		const formattedSettings = userSettings.reduce((acc, setting) => {
 			acc[setting.settingKey] = setting.settingValue === 'true';
