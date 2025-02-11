@@ -60,6 +60,11 @@ export const authOptions: AuthOptions = {
       return token;
     },
   },
+  session: {
+    strategy: 'jwt',
+    maxAge: 60 * 60 * 24, // 1 day
+  },
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export const GET = NextAuth(authOptions);
