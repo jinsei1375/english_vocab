@@ -1,7 +1,8 @@
-import NextAuth, { AuthOptions } from 'next-auth';
+import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+
 declare module 'next-auth' {
   interface Session {
     user: {
@@ -12,7 +13,7 @@ declare module 'next-auth' {
   }
 }
 
-export const authOptions: AuthOptions = {
+const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -29,7 +30,6 @@ export const authOptions: AuthOptions = {
       }
 
       try {
-        // バックエンドのAPIエンドポイントにユーザー情報を送信
         const response = await fetch(`${apiUrl}/api/users`, {
           method: 'POST',
           headers: {
@@ -65,7 +65,6 @@ export const authOptions: AuthOptions = {
     maxAge: 60 * 60 * 24, // 1 day
   },
   secret: process.env.NEXTAUTH_SECRET,
-};
+});
 
-const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
