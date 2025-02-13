@@ -32,6 +32,9 @@ const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
 	'&.Mui-checked': {
 		backgroundColor: 'transparent',
 	},
+	'&.Mui-checked svg': {
+		fill: '#1976d2',
+	},
 	'&:not(.Mui-checked)': {
 		backgroundColor: 'transparent',
 		padding: '12.5px',
@@ -44,9 +47,27 @@ const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
 	},
 }));
 
+const CustomFormControlLabel = styled(FormControlLabel)(({ theme }) => ({
+	'& .MuiFormControlLabel-label.Mui-disabled': {
+		color: '#ccc',
+		opacity: 0.7,
+	},
+}));
+
 export default function DisplayItemsettings() {
 	const [settings, setSettings] = useState(initialSettings);
 	const [flashMessage, setFlashMessage] = useState<string | null>(null);
+
+	const [userId, setUserId] = useState<number | null>(null);
+
+	// クライアントサイドでデータをフェッチ
+	useEffect(() => {
+		const fetchUserId = async () => {
+			const id = await getUserId();
+			setUserId(id);
+		};
+		fetchUserId();
+	}, []);
 
 	useEffect(() => {
 		// 設定をAPIから読み込む
@@ -64,7 +85,10 @@ export default function DisplayItemsettings() {
 				}
 				const data = await response.json();
 				if (Object.keys(data).length > 0) {
-					setSettings(data);
+					setSettings({
+						...initialSettings,
+						...data,
+					});
 				} else {
 					console.log('No settings found');
 					setSettings(initialSettings);
@@ -74,7 +98,7 @@ export default function DisplayItemsettings() {
 			}
 		};
 		fetchSettings();
-	}, []);
+	}, [userId]);
 
 	// 設定の変更
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -115,15 +139,24 @@ export default function DisplayItemsettings() {
 			<Box sx={{ padding: '20px', maxWidth: '600px', margin: 'auto' }}>
 				<Typography variant="h6" gutterBottom>
 					単語登録の際の項目を表示・非表示設定
+					<br />
+					<small>※word, meaningは表示必須です。</small>
 				</Typography>
 				{Object.entries(settings).map(([key, value]) => (
-					<FormControlLabel
-						key={key}
-						control={
-							<CustomCheckbox checked={value} onChange={handleChange} name={key} color="primary" />
-						}
-						label={key}
-					/>
+					<Box key={key}>
+						<CustomFormControlLabel
+							control={
+								<CustomCheckbox
+									checked={value}
+									onChange={handleChange}
+									name={key}
+									color="primary"
+									disabled={key === 'word' || key === 'meaning'}
+								/>
+							}
+							label={key}
+						/>
+					</Box>
 				))}
 				<Box sx={{ marginTop: 2 }}>
 					<Button variant="contained" color="primary" onClick={handleSave}>
