@@ -4,6 +4,7 @@ import PageTitle from '@/components/PageTitle';
 import WordModal from '@/components/WordModal/WordModal';
 import { WordType } from '@/types';
 import { getUserId } from '@/utils/auth';
+import { getUserSettings } from '@/utils/userSettings';
 import { Alert, Box, Snackbar, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 
@@ -16,6 +17,30 @@ export default function Start() {
 	const [modalOpen, setModalOpen] = useState(true);
 	const [showDetails, setShowDetails] = useState(false);
 	const [flashMessage, setFlashMessage] = useState<string | null>(null);
+	const [userSettings, setUserSettings] = useState<Record<string, boolean>>({});
+	const [userId, setUserId] = useState<number | null>(null);
+
+	useEffect(() => {
+		const fetchUserId = async () => {
+			const id = await getUserId();
+			setUserId(id);
+		};
+		fetchUserId();
+	}, []);
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			if (userId !== null) {
+				try {
+					const settings = await getUserSettings(userId);
+					setUserSettings(settings);
+				} catch {
+					throw new Error('Failed to fetch user settings');
+				}
+			}
+		};
+		fetchSettings();
+	}, [userId]);
 
 	// テスト用の単語を取得
 	useEffect(() => {
@@ -109,6 +134,7 @@ export default function Start() {
 						setFlashMessage={setFlashMessage}
 						isTestMode={true}
 						handleTestAnswer={handleTestAnswer}
+						userSettings={userSettings}
 					/>
 					<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
 						<Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>

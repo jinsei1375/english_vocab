@@ -35,6 +35,7 @@ interface WordModalProps {
 	setFlashMessage: React.Dispatch<React.SetStateAction<string | null>>;
 	isTestMode?: boolean;
 	handleTestAnswer?: (isCorrect: boolean) => void;
+	userSettings: Record<string, boolean>;
 }
 
 const WordModal: React.FC<WordModalProps> = ({
@@ -52,6 +53,7 @@ const WordModal: React.FC<WordModalProps> = ({
 	setFlashMessage,
 	isTestMode,
 	handleTestAnswer,
+	userSettings,
 }) => {
 	const handleClose = () => {
 		setShowDetails(false);
@@ -129,27 +131,39 @@ const WordModal: React.FC<WordModalProps> = ({
 											<Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-word' }}>
 												意味: {word.meaning}
 											</Typography>
-											<Typography variant="body2" color="text.secondary">
-												品詞: {partOfSpeechIdToName(word.partOfSpeechId)}
-											</Typography>
-											<Typography variant="body2" color="text.secondary">
-												発音記号: {word.pronunciation}
-											</Typography>
-											<Typography variant="body2" color="text.secondary">
-												例文: {word.exampleSentence}
-											</Typography>
-											<Typography variant="body2" color="text.secondary">
-												類義語: {word.synonyms}
-											</Typography>
-											<Typography variant="body2" color="text.secondary">
-												対義語: {word.antonyms}
-											</Typography>
-											{word.url && (
+											{userSettings.partOfSpeech && (
+												<Typography variant="body2" color="text.secondary">
+													品詞: {partOfSpeechIdToName(word.partOfSpeechId)}
+												</Typography>
+											)}
+											{userSettings.pronunciation && (
+												<Typography variant="body2" color="text.secondary">
+													発音記号: {word.pronunciation}
+												</Typography>
+											)}
+											{userSettings.exampleSentence && (
+												<Typography variant="body2" color="text.secondary">
+													例文: {word.exampleSentence}
+												</Typography>
+											)}
+											{userSettings.synonyms && (
+												<Typography variant="body2" color="text.secondary">
+													類義語: {word.synonyms}
+												</Typography>
+											)}
+											{userSettings.antonyms && (
+												<Typography variant="body2" color="text.secondary">
+													対義語: {word.antonyms}
+												</Typography>
+											)}
+											{userSettings.url && (
 												<Typography variant="body2" color="text.secondary">
 													URL:{' '}
-													<a target="_blank" rel="noopener noreferrer" href={word.url}>
-														{word.url}
-													</a>
+													{word.url && (
+														<a target="_blank" rel="noopener noreferrer" href={word.url}>
+															{word.url}
+														</a>
+													)}
 												</Typography>
 											)}
 											{isTestMode ? (

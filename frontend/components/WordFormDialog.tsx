@@ -21,13 +21,15 @@ interface WordFormDialogProps {
 	onClose: () => void;
 	onAddWord: (newWord: WordType) => void;
 	initialWord?: WordType | null;
+	userSettings: Record<string, boolean>;
 }
-
+// 表示設定によって表示項目変える
 const WordFormDialog: React.FC<WordFormDialogProps> = ({
 	open,
 	onClose,
 	onAddWord,
 	initialWord,
+	userSettings,
 }) => {
 	const [word, setWord] = useState(initialWord?.word ?? '');
 	const [meaning, setMeaning] = useState(initialWord?.meaning ?? '');
@@ -118,70 +120,84 @@ const WordFormDialog: React.FC<WordFormDialogProps> = ({
 						value={meaning}
 						onChange={(e) => setMeaning(e.target.value)}
 					/>
-					<FormControl fullWidth margin="dense">
-						<InputLabel id="part-of-speech-label">品詞</InputLabel>
-						<Select
-							labelId="part-of-speech-label"
-							value={partOfSpeech}
-							onChange={(e) => setPartOfSpeech(e.target.value as string)}
-						>
-							{partOfSpeechList.map((pos) => (
-								<MenuItem key={pos.id} value={pos.id}>
-									{pos.name}
-								</MenuItem>
-							))}
-						</Select>
-					</FormControl>
-					<TextField
-						margin="dense"
-						label="発音"
-						type="text"
-						fullWidth
-						value={pronunciation}
-						onChange={(e) => setPronunciation(e.target.value)}
-					/>
-					<TextField
-						margin="dense"
-						label="例文"
-						type="text"
-						fullWidth
-						value={exampleSentence}
-						onChange={(e) => setExampleSentence(e.target.value)}
-					/>
-					<TextField
-						margin="dense"
-						label="同義語"
-						type="text"
-						fullWidth
-						value={synonyms}
-						onChange={(e) => setSynonyms(e.target.value)}
-					/>
-					<TextField
-						margin="dense"
-						label="反義語"
-						type="text"
-						fullWidth
-						value={antonyms}
-						onChange={(e) => setAntonyms(e.target.value)}
-					/>
-					<TextField
-						margin="dense"
-						label="URL"
-						type="text"
-						fullWidth
-						value={url}
-						onChange={(e) => setUrl(e.target.value)}
-					/>
-					<FormControlLabel
-						control={
-							<Checkbox
-								checked={memorized}
-								onChange={(e) => setMemorized(e.target.checked)}
-								color="primary"
-							/>
-						}
-						label="覚えた"
-					/>
+					{userSettings.partOfSpeech && (
+						<FormControl fullWidth margin="dense">
+							<InputLabel id="part-of-speech-label">品詞</InputLabel>
+							<Select
+								labelId="part-of-speech-label"
+								value={partOfSpeech}
+								onChange={(e) => setPartOfSpeech(e.target.value as string)}
+							>
+								{partOfSpeechList.map((pos) => (
+									<MenuItem key={pos.id} value={pos.id}>
+										{pos.name}
+									</MenuItem>
+								))}
+							</Select>
+						</FormControl>
+					)}
+					{userSettings.pronunciation && (
+						<TextField
+							margin="dense"
+							label="発音"
+							type="text"
+							fullWidth
+							value={pronunciation}
+							onChange={(e) => setPronunciation(e.target.value)}
+						/>
+					)}
+					{userSettings.exampleSentence && (
+						<TextField
+							margin="dense"
+							label="例文"
+							type="text"
+							fullWidth
+							value={exampleSentence}
+							onChange={(e) => setExampleSentence(e.target.value)}
+						/>
+					)}
+					{userSettings.synonyms && (
+						<TextField
+							margin="dense"
+							label="同義語"
+							type="text"
+							fullWidth
+							value={synonyms}
+							onChange={(e) => setSynonyms(e.target.value)}
+						/>
+					)}
+					{userSettings.antonyms && (
+						<TextField
+							margin="dense"
+							label="反義語"
+							type="text"
+							fullWidth
+							value={antonyms}
+							onChange={(e) => setAntonyms(e.target.value)}
+						/>
+					)}
+					{userSettings.url && (
+						<TextField
+							margin="dense"
+							label="URL"
+							type="text"
+							fullWidth
+							value={url}
+							onChange={(e) => setUrl(e.target.value)}
+						/>
+					)}
+					{userSettings.memorized && (
+						<FormControlLabel
+							control={
+								<Checkbox
+									checked={memorized}
+									onChange={(e) => setMemorized(e.target.checked)}
+									color="primary"
+								/>
+							}
+							label="覚えた"
+						/>
+					)}
 					<DialogActions>
 						<Button onClick={onClose} color="primary">
 							キャンセル

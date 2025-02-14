@@ -17,6 +17,8 @@ import { WordType } from '@/types';
 import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 import WordFormDialog from './WordFormDialog';
 import { addOrEditVocabulary } from '@/utils/vocabulary';
+import { getUserId } from '@/utils/auth';
+import { getUserSettings } from '@/utils/userSettings';
 
 interface TestDetailTableProps {
 	testHistory: any;
@@ -32,6 +34,30 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 	const [flashMessage, setFlashMessage] = useState<string | null>(null);
 	const [showDetails, setShowDetails] = useState(false);
 	const [openDeleteConfirm, setOpenDelteConfirm] = useState(false);
+	const [userSettings, setUserSettings] = useState<Record<string, boolean>>({});
+	const [userId, setUserId] = useState<number | null>(null);
+
+	useEffect(() => {
+		const fetchUserId = async () => {
+			const id = await getUserId();
+			setUserId(id);
+		};
+		fetchUserId();
+	}, []);
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			if (userId !== null) {
+				try {
+					const settings = await getUserSettings(userId);
+					setUserSettings(settings);
+				} catch {
+					throw new Error('Failed to fetch user settings');
+				}
+			}
+		};
+		fetchSettings();
+	}, [userId]);
 
 	useEffect(() => {
 		if (testHistory && testHistory.testResults) {
@@ -100,6 +126,7 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 				setVocabularies={setVocabularies}
 				setFlashMessage={setFlashMessage}
 				vocabularies={vocabularies}
+				userSettings={userSettings}
 			/>
 			<WordFormDialog
 				open={openForm}
@@ -114,6 +141,7 @@ export default function TestDetailTable({ testHistory }: TestDetailTableProps) {
 				}
 				onAddWord={handleAddOrEditWord}
 				initialWord={selectedWord}
+				userSettings={userSettings}
 			/>
 			<Snackbar open={!!flashMessage} autoHideDuration={3000} onClose={() => setFlashMessage(null)}>
 				<Alert onClose={() => setFlashMessage(null)} severity="success" sx={{ width: '100%' }}>

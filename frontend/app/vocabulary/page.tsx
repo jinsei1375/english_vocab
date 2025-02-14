@@ -16,6 +16,7 @@ import { showFlashMessage } from '@/utils/flashMessage';
 import { handleCloseModal, handleEditClick, handleWordClick } from '@/utils/modal';
 import { addOrEditVocabulary } from '@/utils/vocabulary';
 import PerPageSelect from '@/components/PerPageSelect';
+import { getUserSettings } from '@/utils/userSettings';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
@@ -35,13 +36,36 @@ export default function Vocabulary() {
 	const [currentPage, setCurrentPage] = useState(1);
 	const [totalPages, setTotalPages] = useState(1);
 	const [itemsPerPage, setItemsPerPage] = useState(10);
+	const [userSettings, setUserSettings] = useState<Record<string, boolean>>({});
+	const [userId, setUserId] = useState<number | null>(null);
 
 	// クライアントサイドでデータをフェッチ
 	useEffect(() => {
+		const fetchUserId = async () => {
+			const id = await getUserId();
+			setUserId(id);
+		};
+		fetchUserId();
+	}, []);
+
+	useEffect(() => {
+		const fetchSettings = async () => {
+			if (userId !== null) {
+				try {
+					const settings = await getUserSettings(userId);
+					setUserSettings(settings);
+				} catch {
+					throw new Error('Failed to fetch user settings');
+				}
+			}
+		};
+		fetchSettings();
+	}, [userId]);
+
+	useEffect(() => {
+		if (userId === null) return;
 		const fetchVocabularies = async () => {
 			try {
-				const userId = await getUserId();
-
 				// 単語一覧を取得
 				const vocabulariesResponse = await fetch(`${apiUrl}/api/users/${userId}/vocabularies/`, {
 					method: 'GET',
@@ -70,7 +94,7 @@ export default function Vocabulary() {
 			}
 		};
 		fetchVocabularies();
-	}, [sortOption, filterOption, searchQuery, itemsPerPage]);
+	}, [sortOption, filterOption, searchQuery, itemsPerPage, userId]);
 
 	// ページ変更時の処理
 	const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -264,6 +288,7 @@ export default function Vocabulary() {
 				}
 				onAddWord={handleAddOrEditWord}
 				initialWord={selectedWord}
+				userSettings={userSettings}
 			/>
 			<WordModal
 				open={modalOpen}
@@ -285,6 +310,7 @@ export default function Vocabulary() {
 				vocabularies={vocabularies}
 				setVocabularies={setVocabularies}
 				setFlashMessage={setFlashMessage}
+				userSettings={userSettings}
 			/>
 			<WordDeleteConfirmDialog
 				open={openDeleteConfirm}
