@@ -93,6 +93,20 @@ router.get('/:userId/vocabularies/test/', async (req, res) => {
 	}
 });
 
+// 登録単語数を取得
+router.get('/:userId/vocabularies/count', async (req, res) => {
+	try {
+		const userId = parseInt(req.params.userId, 10);
+		const vocabulariesCount = await prisma.vocabulary.count({
+			where: { userId },
+		});
+		res.status(200).json(vocabulariesCount);
+	} catch (error) {
+		console.error('Error fetching user vocabularies:', error);
+		res.status(500).json({ error: '単語取得に失敗しました' });
+	}
+});
+
 // ユーザーの記録取得
 router.get('/:userId/report', async (req, res) => {
 	const userId = parseInt(req.params.userId, 10);

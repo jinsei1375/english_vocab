@@ -30,6 +30,25 @@ export async function getTestHistories() {
 	}
 }
 
+export async function getVocabularyCount() {
+	try {
+		const userId = await getUserIdBySsr();
+		const response = await fetch(`${apiUrl}/api/users/${userId}/vocabularies/count`, {
+			method: 'GET',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		});
+		if (!response.ok) {
+			throw new Error('Failed to check vocabulary count');
+		}
+		const data = await response.json();
+		return data;
+	} catch (error) {
+		console.error('Error checking vocabulary count:', error);
+	}
+}
+
 export async function getTestHistory(testHistoryId: number) {
 	try {
 		const userId = await getUserIdBySsr();
