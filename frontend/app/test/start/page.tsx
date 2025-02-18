@@ -1,5 +1,6 @@
 'use client';
 
+import LinkButton from '@/components/LinkButton';
 import PageTitle from '@/components/PageTitle';
 import WordModal from '@/components/WordModal/WordModal';
 import { WordType } from '@/types';
@@ -151,6 +152,7 @@ export default function Start() {
 							{testWords[index].word}: {result.isCorrect ? '◯' : '✖️'}
 						</Typography>
 					))}
+					<LinkButton label="テスト履歴" href="/test" />
 				</Box>
 			)}
 		</Box>
