@@ -18,7 +18,9 @@ import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 import { Navigation } from 'swiper/modules';
 import { formatDate } from '@/utils/formatDate';
-import { handleMemorizedClick } from '@/utils/vocabulary';
+import { handlefavoriteClick, handleMemorizedClick } from '@/utils/vocabulary';
+import StarIcon from '@mui/icons-material/Star';
+import StarBorderIcon from '@mui/icons-material/StarBorder';
 
 interface WordModalProps {
 	open: boolean;
@@ -109,6 +111,21 @@ const WordModal: React.FC<WordModalProps> = ({
 														</Box>
 													)}
 													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
+													{!isTestMode && (
+														<IconButton
+															onClick={() =>
+																handlefavoriteClick(
+																	word,
+																	vocabularies,
+																	setVocabularies,
+																	setSelectedWord,
+																	setFlashMessage
+																)
+															}
+														>
+															{word.favorite ? <StarIcon color="primary" /> : <StarBorderIcon />}
+														</IconButton>
+													)}
 												</Box>
 											</DialogTitle>
 											<Box display="flex" justifyContent="center">
@@ -126,6 +143,21 @@ const WordModal: React.FC<WordModalProps> = ({
 														</Box>
 													)}
 													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
+													{!isTestMode && (
+														<IconButton
+															onClick={() =>
+																handlefavoriteClick(
+																	word,
+																	vocabularies,
+																	setVocabularies,
+																	setSelectedWord,
+																	setFlashMessage
+																)
+															}
+														>
+															{word.favorite ? <StarIcon color="primary" /> : <StarBorderIcon />}
+														</IconButton>
+													)}
 												</Box>
 											</DialogTitle>
 											<Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-word' }}>

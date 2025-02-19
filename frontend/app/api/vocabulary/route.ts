@@ -125,3 +125,22 @@ export const updateMemorizedStatus = async (word: WordType) => {
 		throw new Error('Failed to update memorized status');
 	}
 };
+
+// お気に入りステータス更新
+export const updateFavoriteStatus = async (word: WordType) => {
+	try {
+		const response = await fetch(`${apiUrl}/api/vocabularies/${word.id}/favorite`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({ favorite: !word.favorite }),
+		});
+		if (!response.ok) {
+			throw new Error('Failed to update favorite status');
+		}
+		return await response.json();
+	} catch {
+		throw new Error('Failed to update favorite status');
+	}
+};

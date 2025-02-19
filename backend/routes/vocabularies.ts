@@ -84,4 +84,20 @@ router.post('/:id/memorized', async (req, res) => {
 	}
 });
 
+// お気に入りステータス更新
+router.post('/:id/favorite', async (req, res) => {
+	const id = parseInt(req.params.id, 10);
+	const { favorite } = req.body;
+	try {
+		const updatedWord = await prisma.vocabulary.update({
+			where: { id: id as number },
+			data: { favorite: favorite as boolean },
+		});
+		res.status(200).json(updatedWord);
+	} catch (error) {
+		console.error('Error updating favorite status:', error);
+		res.status(500).json({ error: 'お気に入りステータスの更新に失敗しました' });
+	}
+});
+
 export default router;

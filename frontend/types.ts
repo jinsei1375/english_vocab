@@ -12,6 +12,7 @@ export interface WordType {
 	antonyms: string;
 	url: string;
 	memorized: boolean;
+	favorite: boolean;
 	createdAt: DateTime;
 	updatedAt: DateTime;
 }

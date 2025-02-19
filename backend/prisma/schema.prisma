@@ -47,6 +47,7 @@ model Vocabulary {
   antonyms    String?  @map("antonyms") // 対義語
   url         String?  @map("url") // URL
   memorized   Boolean? @map("memorized") // 覚えたかチェック
+  favorite    Boolean? @map("favorite") // お気に入り
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
   deletedAt   DateTime? @map("deleted_at")

@@ -1,4 +1,4 @@
-import { updateMemorizedStatus } from '@/app/api/vocabulary/route';
+import { updateFavoriteStatus, updateMemorizedStatus } from '@/app/api/vocabulary/route';
 import { WordType } from '@/types';
 import { Dispatch, SetStateAction } from 'react';
 import { showFlashMessage } from './flashMessage';
@@ -69,5 +69,32 @@ export const addOrEditVocabulary = async (
 		showFlashMessage(message, setFlashMessage);
 	} catch {
 		throw new Error('Failed to add vocabulary');
+	}
+};
+
+// お気に入りボタンクリック処理
+export const handlefavoriteClick = async (
+	word: WordType,
+	vocabularies: WordType[],
+	setVocabularies: Dispatch<SetStateAction<WordType[]>>,
+	setSelectedWord: Dispatch<SetStateAction<WordType | null>>,
+	setFlashMessage: Dispatch<SetStateAction<string | null>>
+) => {
+	try {
+		const updatedWord = await updateFavoriteStatus(word);
+		// 更新された単語をローカルの状態に反映
+		const updatedVocabularies = vocabularies.map((vocabulary) =>
+			vocabulary.id === updatedWord.id ? updatedWord : vocabulary
+		);
+		setVocabularies(updatedVocabularies);
+		setSelectedWord(updatedWord);
+
+		// フラッシュメッセージを表示
+		showFlashMessage(
+			updatedWord.favorite ? 'お気に入り追加しました' : 'お気に入り解除しました',
+			setFlashMessage
+		);
+	} catch {
+		throw new Error('Failed to update memorized status');
 	}
 };
