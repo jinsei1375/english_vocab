@@ -84,7 +84,9 @@ const WordModal: React.FC<WordModalProps> = ({
 			}}
 		>
 			<Box display="flex" alignItems="center">
-				{!isTestMode && <IconButton className="swiper-button-prev"></IconButton>}
+				{!isTestMode && vocabularies.length > 1 && (
+					<IconButton className="swiper-button-prev"></IconButton>
+				)}
 				<Swiper
 					initialSlide={initialSlideIndex}
 					onSlideChange={(swiper) => setSelectedWord(vocabularies[swiper.activeIndex])}
@@ -97,7 +99,7 @@ const WordModal: React.FC<WordModalProps> = ({
 					style={{ width: '100%' }}
 				>
 					{vocabularies.map((vocabulary) => (
-						<SwiperSlide key={vocabulary.id}>
+						<SwiperSlide key={vocabulary.id} style={{ width: '400px' }}>
 							<DialogContent sx={{ position: 'relative', minHeight: '300px', padding: '40px 24px' }}>
 								<Box className={`flip-card ${showDetails ? 'flipped' : ''}`} sx={{ minHeight: '300px' }}>
 									<Box className="flip-card-inner" sx={{ minHeight: '300px' }}>
@@ -250,7 +252,9 @@ const WordModal: React.FC<WordModalProps> = ({
 						</SwiperSlide>
 					))}
 				</Swiper>
-				{!isTestMode && <IconButton className="swiper-button-next"></IconButton>}
+				{!isTestMode && vocabularies.length > 1 && (
+					<IconButton className="swiper-button-next"></IconButton>
+				)}
 			</Box>
 		</Dialog>
 	);
