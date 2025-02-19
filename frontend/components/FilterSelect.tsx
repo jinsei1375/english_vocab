@@ -23,6 +23,7 @@ export default function FileterSelect({ filterOption, setFilterOption }: FilterS
 				sx={{ backgroundColor: 'white', color: 'black', height: '50px' }}
 			>
 				<MenuItem value="all">全て</MenuItem>
+				<MenuItem value="favorite">お気に入り</MenuItem>
 				<MenuItem value="memorized">覚えた</MenuItem>
 				<MenuItem value="notMemorized">覚えてない</MenuItem>
 			</Select>

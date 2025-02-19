@@ -94,7 +94,7 @@ export default function Vocabulary() {
 			}
 		};
 		fetchVocabularies();
-	}, [sortOption, filterOption, searchQuery, itemsPerPage, userId]);
+	}, [sortOption, filterOption, searchQuery, itemsPerPage, userId, vocabularies]);
 
 	// ページ変更時の処理
 	const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
@@ -125,6 +125,8 @@ export default function Vocabulary() {
 	// 絞り込み処理
 	const filterVocabularies = (vocabularies: WordType[], option: string) => {
 		switch (option) {
+			case 'favorite':
+				return vocabularies.filter((vocabulary) => vocabulary.favorite);
 			case 'memorized':
 				return vocabularies.filter((vocabulary) => vocabulary.memorized);
 			case 'notMemorized':
