@@ -21,6 +21,7 @@ import { formatDate } from '@/utils/formatDate';
 import { handlefavoriteClick, handleMemorizedClick } from '@/utils/vocabulary';
 import StarIcon from '@mui/icons-material/Star';
 import StarBorderIcon from '@mui/icons-material/StarBorder';
+import FavoriteIconButton from '../FavoriteIconButton';
 
 interface WordModalProps {
 	open: boolean;
@@ -107,15 +108,10 @@ const WordModal: React.FC<WordModalProps> = ({
 										<Box className="flip-card-front">
 											<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 												<Box display="flex" justifyContent="center" alignItems="center">
-													{!isTestMode && word.memorized && (
-														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-															<CheckIcon sx={{ color: 'green' }} />
-														</Box>
-													)}
-													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 													{!isTestMode && (
-														<IconButton
-															onClick={() =>
+														<FavoriteIconButton
+															isFavorite={vocabulary.favorite}
+															handlefavoriteClick={() =>
 																handlefavoriteClick(
 																	word,
 																	vocabularies,
@@ -124,10 +120,14 @@ const WordModal: React.FC<WordModalProps> = ({
 																	setFlashMessage
 																)
 															}
-														>
-															{word.favorite ? <StarIcon color="primary" /> : <StarBorderIcon />}
-														</IconButton>
+														/>
 													)}
+													{!isTestMode && word.memorized && (
+														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+															<CheckIcon sx={{ color: 'green' }} />
+														</Box>
+													)}
+													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 												</Box>
 											</DialogTitle>
 											<Box display="flex" justifyContent="center">
@@ -139,15 +139,10 @@ const WordModal: React.FC<WordModalProps> = ({
 										<Box className="flip-card-back">
 											<DialogTitle sx={{ textAlign: 'center', wordBreak: 'break-word' }}>
 												<Box display="flex" justifyContent="center" alignItems="center">
-													{word.memorized && (
-														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
-															<CheckIcon sx={{ color: 'green' }} />
-														</Box>
-													)}
-													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 													{!isTestMode && (
-														<IconButton
-															onClick={() =>
+														<FavoriteIconButton
+															isFavorite={vocabulary.favorite}
+															handlefavoriteClick={() =>
 																handlefavoriteClick(
 																	word,
 																	vocabularies,
@@ -156,10 +151,14 @@ const WordModal: React.FC<WordModalProps> = ({
 																	setFlashMessage
 																)
 															}
-														>
-															{word.favorite ? <StarIcon color="primary" /> : <StarBorderIcon />}
-														</IconButton>
+														/>
 													)}
+													{word.memorized && (
+														<Box sx={{ width: '24px', display: 'flex', justifyContent: 'center' }}>
+															<CheckIcon sx={{ color: 'green' }} />
+														</Box>
+													)}
+													<Box sx={{ wordBreak: 'break-word', textAlign: 'center' }}>{word.word}</Box>
 												</Box>
 											</DialogTitle>
 											<Typography variant="body2" color="text.secondary" sx={{ wordBreak: 'break-word' }}>
