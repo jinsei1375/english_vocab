@@ -16,16 +16,25 @@ import { showFlashMessage } from '@/utils/flashMessage';
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL;
 
-const initialSettings = {
-	word: true,
-	meaning: true,
-	partOfSpeech: true,
-	pronunciation: true,
-	exampleSentence: true,
-	synonyms: true,
-	antonyms: true,
-	url: true,
-	memorized: true,
+interface Setting {
+	value: boolean;
+	label: string;
+}
+
+interface Settings {
+	[key: string]: Setting;
+}
+
+const initialSettings: Settings = {
+	word: { value: true, label: '単語' },
+	meaning: { value: true, label: '意味' },
+	partOfSpeech: { value: true, label: '品詞' },
+	pronunciation: { value: true, label: '発音' },
+	exampleSentence: { value: true, label: '例文' },
+	synonyms: { value: true, label: '同義語' },
+	antonyms: { value: true, label: '反義語' },
+	url: { value: true, label: 'URL' },
+	memorized: { value: true, label: '覚えた' },
 };
 
 const CustomCheckbox = styled(Checkbox)(({ theme }) => ({
@@ -85,10 +94,13 @@ export default function DisplayItemsettings() {
 				}
 				const data = await response.json();
 				if (Object.keys(data).length > 0) {
-					setSettings({
-						...initialSettings,
-						...data,
+					const updatedSettings = { ...initialSettings };
+					Object.keys(data).forEach((key) => {
+						if (updatedSettings[key]) {
+							updatedSettings[key].value = data[key];
+						}
 					});
+					setSettings(updatedSettings);
 				} else {
 					console.log('No settings found');
 					setSettings(initialSettings);
@@ -104,20 +116,29 @@ export default function DisplayItemsettings() {
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setSettings({
 			...settings,
-			[event.target.name]: event.target.checked,
+			[event.target.name]: {
+				...settings[event.target.name],
+				value: event.target.checked,
+			},
 		});
 	};
 
 	const handleSave = async () => {
 		try {
 			const userId = await getUserId();
-			console.log(settings);
+			const settingsToSave = Object.keys(settings).reduce(
+				(acc, key) => {
+					acc[key] = settings[key].value;
+					return acc;
+				},
+				{} as Record<string, boolean>
+			);
 			const response = await fetch(`${apiUrl}/api/users/${userId}/settings/display`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
-				body: JSON.stringify(settings),
+				body: JSON.stringify(settingsToSave),
 			});
 			if (!response.ok) {
 				throw new Error('Failed to save settings');
@@ -125,7 +146,13 @@ export default function DisplayItemsettings() {
 			const data = await response.json();
 			console.log(data);
 			if (data) {
-				setSettings(data);
+				const updatedSettings = { ...initialSettings };
+				Object.keys(data).forEach((key) => {
+					if (updatedSettings[key]) {
+						updatedSettings[key].value = data[key];
+					}
+				});
+				setSettings(updatedSettings);
 				showFlashMessage('設定が完了しました', setFlashMessage);
 			}
 		} catch (error) {
@@ -142,7 +169,7 @@ export default function DisplayItemsettings() {
 					<br />
 					<small>※word, meaningは表示必須です。</small>
 				</Typography>
-				{Object.entries(settings).map(([key, value]) => (
+				{Object.entries(settings).map(([key, { value, label }]) => (
 					<Box key={key}>
 						<CustomFormControlLabel
 							control={
@@ -154,7 +181,7 @@ export default function DisplayItemsettings() {
 									disabled={key === 'word' || key === 'meaning'}
 								/>
 							}
-							label={key}
+							label={label}
 						/>
 					</Box>
 				))}
